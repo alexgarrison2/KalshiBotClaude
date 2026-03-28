@@ -44,7 +44,7 @@ from rich.console import Console
 
 from strategies.base_strategy import BaseStrategy, TradeSignal, Signal
 from data.weather_data import (
-    SERIES_CONFIG, model_prob,
+    SERIES_CONFIG, model_prob, get_calibrated_sigma,
     fetch_all_forecasts, fetch_metar_observations, fetch_ensemble_forecasts,
 )
 
@@ -219,8 +219,18 @@ def aggressive_limit_price(side: str, bid: float, ask: float) -> int:
 
 # ── Signal evaluation ─────────────────────────────────────────────────────────
 
-def current_sigma() -> float:
-    return SIGMA_LATE if datetime.now(ET).hour >= CUTOFF_HOUR else SIGMA_EARLY
+def current_sigma(series: str = "") -> float:
+    """
+    Return the sigma (°F) for the current time of day.
+
+    If `series` is provided and sigma_lookup.json exists, returns the
+    per-city calibrated sigma for this series and month.
+    Falls back to SIGMA_EARLY / SIGMA_LATE constants if lookup is missing.
+    """
+    hour = datetime.now(ET).hour
+    if series:
+        return get_calibrated_sigma(series, hour)
+    return SIGMA_LATE if hour >= CUTOFF_HOUR else SIGMA_EARLY
 
 
 def evaluate_market(
@@ -248,7 +258,11 @@ def evaluate_market(
         return None
 
     # ── Layer 2: NWS normCDF base model ──────────────────────────────────────
-    prob   = model_prob(forecast, market.threshold, market.strike_type, sigma)
+    # Use per-city calibrated sigma (from sigma_lookup.json) if available;
+    # fall back to the passed-in `sigma` (original hardcoded defaults).
+    now_hour        = datetime.now(ET).hour
+    effective_sigma = get_calibrated_sigma(market.series, now_hour)
+    prob   = model_prob(forecast, market.threshold, market.strike_type, effective_sigma)
     source = "NWS"
     notes  = []
 
@@ -283,8 +297,8 @@ def evaluate_market(
         ecmwf_fc = day_data.get(f"ecmwf_{fc_key}")
 
         if gfs_fc is not None and ecmwf_fc is not None:
-            gfs_prob   = model_prob(gfs_fc,   market.threshold, market.strike_type, sigma)
-            ecmwf_prob = model_prob(ecmwf_fc, market.threshold, market.strike_type, sigma)
+            gfs_prob   = model_prob(gfs_fc,   market.threshold, market.strike_type, effective_sigma)
+            ecmwf_prob = model_prob(ecmwf_fc, market.threshold, market.strike_type, effective_sigma)
 
             if (prob > 0.5) == (gfs_prob > 0.5) == (ecmwf_prob > 0.5):
                 boost = ENSEMBLE_BOOST
