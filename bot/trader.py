@@ -202,7 +202,15 @@ class WeatherTrader:
         return markets
 
     def _fetch_all_open_markets(self) -> list:
-        """Scan all configured series, return combined list sorted by volume."""
+        """Scan all configured series, return combined list sorted by volume.
+
+        SCALING NOTE: At 1-contract sizes this is fine. At larger sizes, watch
+        Kalshi's rate limits. Each scan = 20 series API calls + 20 METAR calls
+        every 30 seconds. As contract sizes grow, consider:
+          - Increasing poll_interval (60–120s) to reduce call volume
+          - Batching series calls if Kalshi adds a bulk endpoint
+          - Caching market state and only re-fetching changed series
+        """
         all_markets = []
         for series in ALL_SERIES:
             try:
