@@ -38,6 +38,20 @@ class Trade:
 
 
 @dataclass
+class WeatherTrade(Trade):
+    """A weather backtest trade with city/hour/temperature metadata."""
+    city: str = ""
+    series: str = ""
+    trade_date: str = ""        # "YYYY-MM-DD"
+    hour_et: int = 0            # ET hour when signal fired (7–15)
+    threshold: float = 0.0     # market threshold in °F
+    obs_temp: float = 0.0      # observed temp at signal time
+    model_prob_val: float = 0.0 # signal probability (0.97 for METAR confirm)
+    market_mid: float = 0.0    # market mid price at signal time (0.0–1.0)
+    signal_source: str = ""    # "METAR↑" or "METAR↓"
+
+
+@dataclass
 class BacktestResults:
     """The full results of a backtest run."""
     strategy_name: str
@@ -239,4 +253,89 @@ def print_results(results: BacktestResults) -> None:
     else:
         console.print("[bold red]✗ Strategy FAILS one or more benchmarks — needs refinement[/bold red]")
 
+    console.print()
+
+
+def print_weather_results(results: BacktestResults) -> None:
+    """Print weather backtest results: standard metrics + per-city and per-hour breakdowns."""
+    print_results(results)
+
+    weather_trades = [t for t in results.trades if isinstance(t, WeatherTrade)]
+    if not weather_trades:
+        return
+
+    def _win_rate_str(trades):
+        if not trades:
+            return "—"
+        rate = sum(1 for t in trades if t.won) / len(trades) * 100
+        color = "green" if rate >= 55 else "red"
+        return f"[{color}]{rate:.0f}%[/{color}]"
+
+    def _net_str(trades):
+        gross_win  = sum((100 - t.entry_price) * t.count / 100 for t in trades if t.won)
+        gross_loss = sum(t.entry_price * t.count / 100 for t in trades if not t.won)
+        fees       = sum(t.fee_cents for t in trades) / 100
+        net = gross_win - gross_loss - fees
+        color = "green" if net >= 0 else "red"
+        return f"[{color}]${net:+.2f}[/{color}]"
+
+    def _avg_edge_str(trades):
+        edges = [t.model_prob_val - t.market_mid for t in trades if isinstance(t, WeatherTrade)]
+        if not edges:
+            return "—"
+        return f"{sum(edges)/len(edges)*100:.1f}¢"
+
+    # ── Per-city breakdown ────────────────────────────────────────────────────
+    console.print("[bold cyan]Per-City Breakdown[/bold cyan]")
+    city_table = Table(show_header=True, header_style="bold magenta")
+    city_table.add_column("City", style="white")
+    city_table.add_column("Trades", style="yellow", justify="right")
+    city_table.add_column("Wins",   style="yellow", justify="right")
+    city_table.add_column("Win%",   style="yellow", justify="right")
+    city_table.add_column("Net P&L", justify="right")
+    city_table.add_column("Avg Edge", justify="right")
+
+    by_city: dict = {}
+    for t in weather_trades:
+        by_city.setdefault(t.city, []).append(t)
+
+    for city in sorted(by_city):
+        ts = by_city[city]
+        city_table.add_row(
+            city,
+            str(len(ts)),
+            str(sum(1 for t in ts if t.won)),
+            _win_rate_str(ts),
+            _net_str(ts),
+            _avg_edge_str(ts),
+        )
+    console.print(city_table)
+    console.print()
+
+    # ── Per-hour breakdown ────────────────────────────────────────────────────
+    console.print("[bold cyan]Per-Hour Breakdown (ET)[/bold cyan]")
+    hour_table = Table(show_header=True, header_style="bold magenta")
+    hour_table.add_column("Hour (ET)", style="white")
+    hour_table.add_column("Trades",    style="yellow", justify="right")
+    hour_table.add_column("Wins",      style="yellow", justify="right")
+    hour_table.add_column("Win%",      style="yellow", justify="right")
+    hour_table.add_column("Net P&L",   justify="right")
+    hour_table.add_column("Avg Edge",  justify="right")
+
+    by_hour: dict = {}
+    for t in weather_trades:
+        by_hour.setdefault(t.hour_et, []).append(t)
+
+    for hour in sorted(by_hour):
+        ts = by_hour[hour]
+        label = f"{hour}:00 {'AM' if hour < 12 else 'PM'}"
+        hour_table.add_row(
+            label,
+            str(len(ts)),
+            str(sum(1 for t in ts if t.won)),
+            _win_rate_str(ts),
+            _net_str(ts),
+            _avg_edge_str(ts),
+        )
+    console.print(hour_table)
     console.print()

@@ -17,6 +17,8 @@ ARGUMENTS:
     --size        Contracts per trade (default: 1)
     --poll        Seconds between scans (default: 30)
     --hours       Stop after N hours (default: run until Ctrl+C)
+    --backtest    Run weather METAR backtest against historical data and exit
+    --days        Days of history to use for backtest (default: 30)
 
 START HERE:
     1. Run dry-run first to see signals without risking money:
@@ -82,6 +84,17 @@ def main():
         default=None,
         help="Stop after N hours (default: run until Ctrl+C)",
     )
+    parser.add_argument(
+        "--backtest",
+        action="store_true",
+        help="Run weather backtest (METAR layer) against historical data and exit.",
+    )
+    parser.add_argument(
+        "--days",
+        type=int,
+        default=30,
+        help="Days of history to replay in backtest (default: 30)",
+    )
 
     args = parser.parse_args()
 
@@ -110,6 +123,14 @@ def main():
         )
     else:
         console.print("[bold red]LIVE TRADING — real orders will be placed![/bold red]")
+
+    if args.backtest:
+        from backtesting.engine import BacktestEngine
+        from backtesting.metrics import print_weather_results
+        engine = BacktestEngine(client)
+        results = engine.run_weather_edge(days_back=args.days, trade_size=args.size)
+        print_weather_results(results)
+        sys.exit(0)
 
     if args.strategy == "weather_edge":
         trader = WeatherTrader(
