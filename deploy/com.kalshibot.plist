@@ -4,8 +4,17 @@
 <!--
   Kalshi Bot — macOS LaunchAgent
 
-  Runs the weather strategy daily at 8 AM CT (= 9 AM ET).
-  Stops after 8 hours (covers the full trading day).
+  Runs the weather strategy daily at 7 AM CT (= 8 AM ET).
+  Stops after 9 hours, covering the full trading day through ~4 PM CT.
+
+  Why 7 AM CT / 8 AM ET?
+    - Next-day markets open the evening before; the morning NWS model run
+      (released ~5-6 AM ET) contains overnight forecast updates. Starting at
+      8 AM ET means we catch markets before the rest of the market reacts to
+      the new NWS data.
+    - σ tightens at 11 AM ET (early = σ=3.0°F, late = σ=2.0°F), so morning
+      entries get wider signals but also earlier pricing inefficiencies.
+    - 9-hour window ensures same-day markets that close by 4-5 PM ET are covered.
 
   INSTALL:
       cp deploy/com.kalshibot.plist ~/Library/LaunchAgents/
@@ -14,10 +23,13 @@
   CHECK STATUS:
       launchctl list | grep kalshibot
 
-  STOP:
+  UNINSTALL:
       launchctl unload ~/Library/LaunchAgents/com.kalshibot.plist
+      rm ~/Library/LaunchAgents/com.kalshibot.plist
 
-  MANUAL RUN (test first):
+  MANUAL RUN (test first — dry run):
+      python deploy/run_bot.py --strategy weather_edge
+  MANUAL RUN (live, one scan):
       python deploy/run_bot.py --strategy weather_edge --live --once
 -->
 <plist version="1.0">
@@ -33,14 +45,14 @@
         <string>weather_edge</string>
         <string>--live</string>
         <string>--hours</string>
-        <string>8</string>
+        <string>9</string>
     </array>
 
-    <!-- 8 AM CT = 9 AM ET (CDT, UTC-5). Adjust Hour if you change timezones. -->
+    <!-- 7 AM CT = 8 AM ET (CDT, UTC-5). Adjust Hour if you change timezones. -->
     <key>StartCalendarInterval</key>
     <dict>
         <key>Hour</key>
-        <integer>8</integer>
+        <integer>7</integer>
         <key>Minute</key>
         <integer>0</integer>
     </dict>
@@ -54,7 +66,6 @@
     <key>StandardErrorPath</key>
     <string>/Users/alexgarrison/KalshiBotClaude/logs/launchagent.log</string>
 
-    <!-- Keep environment variables — needed for .env loading -->
     <key>EnvironmentVariables</key>
     <dict>
         <key>PATH</key>
@@ -63,7 +74,6 @@
         <string>/Users/alexgarrison</string>
     </dict>
 
-    <!-- Don't restart if it crashes — let it run fresh next morning -->
     <key>RunAtLoad</key>
     <false/>
 </dict>

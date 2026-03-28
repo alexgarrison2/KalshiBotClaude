@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Kalshi Bot — Results Checker LaunchAgent
+
+  Runs check_results.py daily at 9 PM CT (= 10 PM ET).
+  By 10 PM ET all daily temperature markets have settled.
+  Updates trades.csv with result/pnl for the day's trades.
+
+  INSTALL (alongside the main bot agent):
+      cp deploy/com.kalshibot.results.plist ~/Library/LaunchAgents/
+      launchctl load ~/Library/LaunchAgents/com.kalshibot.results.plist
+
+  CHECK STATUS:
+      launchctl list | grep kalshibot
+
+  MANUAL RUN:
+      python deploy/check_results.py
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.kalshibot.results</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Library/Frameworks/Python.framework/Versions/3.13/bin/python3</string>
+        <string>/Users/alexgarrison/KalshiBotClaude/deploy/check_results.py</string>
+    </array>
+
+    <!-- 9 PM CT = 10 PM ET. All daily markets settled by this time. -->
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>21</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/alexgarrison/KalshiBotClaude</string>
+
+    <key>StandardOutPath</key>
+    <string>/Users/alexgarrison/KalshiBotClaude/logs/results.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/Users/alexgarrison/KalshiBotClaude/logs/results.log</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/Library/Frameworks/Python.framework/Versions/3.13/bin:/usr/local/bin:/usr/bin:/bin</string>
+        <key>HOME</key>
+        <string>/Users/alexgarrison</string>
+    </dict>
+
+    <key>RunAtLoad</key>
+    <false/>
+</dict>
+</plist>
