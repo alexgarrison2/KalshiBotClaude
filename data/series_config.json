@@ -1,0 +1,162 @@
+{
+  "KXHIGHTLV": {
+    "city": "Las Vegas",
+    "temp_type": "high",
+    "lat": 36.0853,
+    "lon": -115.1522,
+    "station": "KLAS",
+    "forecast_url": "https://api.weather.gov/gridpoints/VEF/119,99/forecast"
+  },
+  "KXHIGHTSFO": {
+    "city": "San Francisco",
+    "temp_type": "high",
+    "lat": 37.6213,
+    "lon": -122.3789,
+    "station": "KSFO",
+    "forecast_url": "https://api.weather.gov/gridpoints/MTR/84,84/forecast"
+  },
+  "KXLOWTAUS": {
+    "city": "Austin",
+    "temp_type": "low",
+    "lat": 30.1945,
+    "lon": -97.6699,
+    "station": "KAUS",
+    "forecast_url": "https://api.weather.gov/gridpoints/EWX/155,90/forecast"
+  },
+  "KXHIGHTDC": {
+    "city": "Washington DC",
+    "temp_type": "high",
+    "lat": 38.8521,
+    "lon": -77.0379,
+    "station": "KDCA",
+    "forecast_url": "https://api.weather.gov/gridpoints/LWX/97,74/forecast"
+  },
+  "KXLOWTNYC": {
+    "city": "New York City",
+    "temp_type": "low",
+    "lat": 40.6397,
+    "lon": -73.7789,
+    "station": "KJFK",
+    "forecast_url": "https://api.weather.gov/gridpoints/OKX/35,33/forecast"
+  },
+  "KXHIGHTDAL": {
+    "city": "Dallas",
+    "temp_type": "high",
+    "lat": 32.8998,
+    "lon": -97.0403,
+    "station": "KDFW",
+    "forecast_url": "https://api.weather.gov/gridpoints/FWD/82,64/forecast"
+  },
+  "KXHIGHTPHX": {
+    "city": "Phoenix",
+    "temp_type": "high",
+    "lat": 33.4343,
+    "lon": -112.0078,
+    "station": "KPHX",
+    "forecast_url": "https://api.weather.gov/gridpoints/PSR/163,60/forecast"
+  },
+  "KXLOWTCHI": {
+    "city": "Chicago",
+    "temp_type": "low",
+    "lat": 41.9742,
+    "lon": -87.9073,
+    "station": "KORD",
+    "forecast_url": "https://api.weather.gov/gridpoints/LOT/66,77/forecast"
+  },
+  "KXHIGHTSATX": {
+    "city": "San Antonio",
+    "temp_type": "high",
+    "lat": 29.5337,
+    "lon": -98.4698,
+    "station": "KSAT",
+    "forecast_url": "https://api.weather.gov/gridpoints/EWX/128,71/forecast"
+  },
+  "KXHIGHTMIN": {
+    "city": "Minneapolis",
+    "temp_type": "high",
+    "lat": 44.8848,
+    "lon": -93.2223,
+    "station": "KMSP",
+    "forecast_url": "https://api.weather.gov/gridpoints/MPX/104,70/forecast"
+  },
+  "KXHIGHTSEA": {
+    "city": "Seattle",
+    "temp_type": "high",
+    "lat": 47.4502,
+    "lon": -122.3088,
+    "station": "KSEA",
+    "forecast_url": "https://api.weather.gov/gridpoints/SEW/124,68/forecast"
+  },
+  "KXLOWTMIA": {
+    "city": "Miami",
+    "temp_type": "low",
+    "lat": 25.7959,
+    "lon": -80.2870,
+    "station": "KMIA",
+    "forecast_url": "https://api.weather.gov/gridpoints/MFL/110,42/forecast"
+  },
+  "KXLOWTLAX": {
+    "city": "Los Angeles",
+    "temp_type": "low",
+    "lat": 33.9425,
+    "lon": -118.4081,
+    "station": "KLAX",
+    "forecast_url": "https://api.weather.gov/gridpoints/LOX/148,41/forecast"
+  },
+  "KXHIGHTHOU": {
+    "city": "Houston",
+    "temp_type": "high",
+    "lat": 29.6454,
+    "lon": -95.2789,
+    "station": "KHOU",
+    "forecast_url": "https://api.weather.gov/gridpoints/HGX/66,89/forecast"
+  },
+  "KXHIGHTNOLA": {
+    "city": "New Orleans",
+    "temp_type": "high",
+    "lat": 29.9935,
+    "lon": -90.2580,
+    "station": "KMSY",
+    "forecast_url": "https://api.weather.gov/gridpoints/LIX/60,90/forecast"
+  },
+  "KXHIGHTOKC": {
+    "city": "Oklahoma City",
+    "temp_type": "high",
+    "lat": 35.3931,
+    "lon": -97.6007,
+    "station": "KOKC",
+    "forecast_url": "https://api.weather.gov/gridpoints/OUN/94,90/forecast"
+  },
+  "KXLOWTDEN": {
+    "city": "Denver",
+    "temp_type": "low",
+    "lat": 39.8561,
+    "lon": -104.6737,
+    "station": "KDEN",
+    "forecast_url": "https://api.weather.gov/gridpoints/BOU/74,66/forecast"
+  },
+  "KXLOWTPHIL": {
+    "city": "Philadelphia",
+    "temp_type": "low",
+    "lat": 39.8719,
+    "lon": -75.2411,
+    "station": "KPHL",
+    "forecast_url": "https://api.weather.gov/gridpoints/PHI/48,72/forecast"
+  },
+  "KXHIGHTBOS": {
+    "city": "Boston",
+    "temp_type": "high",
+    "lat": 42.3631,
+    "lon": -71.0064,
+    "station": "KBOS",
+    "forecast_url": "https://api.weather.gov/gridpoints/BOX/73,90/forecast"
+  },
+  "KXHIGHTATL": {
+    "city": "Atlanta",
+    "temp_type": "high",
+    "lat": 33.6407,
+    "lon": -84.4277,
+    "station": "KATL",
+    "forecast_url": "https://api.weather.gov/gridpoints/FFC/50,82/forecast"
+  }
+}

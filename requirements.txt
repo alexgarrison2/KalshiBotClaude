@@ -1,0 +1,7 @@
+kalshi-python
+pandas
+numpy
+ta
+python-dotenv
+rich
+requests

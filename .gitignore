@@ -1,0 +1,28 @@
+# Secrets — never commit these
+.env
+*.pem
+keys/
+
+# Runtime state — regenerated on each run
+data/pending_orders.json
+data/trader.pid
+
+# Logs — kept locally, not in repo
+logs/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# macOS
+.DS_Store
+
+# Claude
+.claude/
+
+# Data files
+data/*.csv
+data/*.db
