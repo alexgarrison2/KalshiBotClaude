@@ -69,6 +69,9 @@ CALIB_BIAS_EDGE    = 0.15   # extra edge credit when calibration bias applies
 
 ENSEMBLE_BOOST     = 0.10   # extra edge when all 3 models agree
 
+KELLY_FRACTION     = 0.25   # quarter-Kelly (conservative until 100+ trade history)
+KELLY_MAX_CONTRACTS = 10    # hard cap per trade regardless of Kelly output
+
 
 # ── Market info dataclass ─────────────────────────────────────────────────────
 
@@ -338,6 +341,34 @@ def evaluate_all_markets(
             signals.append(sig)
     signals.sort(key=lambda s: abs(s.effective_edge), reverse=True)
     return signals
+
+
+# ── Kelly Criterion position sizing ──────────────────────────────────────────
+
+def kelly_contracts(
+    model_prob: float,
+    entry_cost: float,
+    balance: float,
+    max_contracts: int = KELLY_MAX_CONTRACTS,
+    kelly_fraction: float = KELLY_FRACTION,
+) -> int:
+    """
+    Quarter-Kelly position sizing for binary prediction markets.
+
+    For a YES contract at price c paying $1 on win:
+        f* = (p - c) / (1 - c)
+    where p = model probability, c = entry cost per contract.
+
+    We use quarter-Kelly (0.25×) by default until we have 100+ trades of
+    live history to validate calibration. Returns at least 1, at most max_contracts.
+    """
+    c = entry_cost
+    if balance <= 0 or c <= 0 or c >= 1 or model_prob <= c:
+        return 1
+    full_kelly = (model_prob - c) / (1.0 - c)
+    dollar_bet = balance * full_kelly * kelly_fraction
+    contracts  = max(1, min(max_contracts, int(dollar_bet / c)))
+    return contracts
 
 
 # ── BaseStrategy wrapper (backtest compatibility) ────────────────────────────

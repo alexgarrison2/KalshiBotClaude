@@ -8,6 +8,7 @@ WeatherTrader  — primary. Full 4-layer model, smart limit pricing,
 Trader         — legacy wrapper for the crypto momentum strategy.
                  Kept for backward compatibility with run_bot.py.
 """
+import csv
 import json
 import os
 import time
@@ -30,17 +31,26 @@ from data.weather_data import (
 from strategies.weather_edge import (
     WeatherSignal, parse_open_market,
     evaluate_all_markets, current_sigma,
-    aggressive_limit_price, MIN_EDGE, MIN_VOLUME,
+    aggressive_limit_price, kelly_contracts,
+    MIN_EDGE, MIN_VOLUME,
 )
 from config.settings import POLL_INTERVAL_SECONDS, DEFAULT_TRADE_SIZE
 
 console = Console()
 ET = ZoneInfo("America/New_York")
 
-BASE_URL        = "https://api.elections.kalshi.com/trade-api/v2"
-PENDING_FILE    = "data/pending_orders.json"
-PID_FILE        = "data/trader.pid"
+BASE_URL          = "https://api.elections.kalshi.com/trade-api/v2"
+PENDING_FILE      = "data/pending_orders.json"
+PID_FILE          = "data/trader.pid"
+CSV_FILE          = "data/trades.csv"
 FILL_TIMEOUT_MINS = 30   # cancel + chase after this long unfilled
+
+CSV_HEADERS = [
+    "date", "ticker", "city", "temp_type", "threshold", "strike_type",
+    "side", "entry_mode", "price_cents", "contracts", "entry_cost",
+    "model_prob", "effective_edge", "source", "notes",
+    "order_id", "placed_at", "fee", "result", "pnl",
+]
 
 
 # ── WeatherTrader ─────────────────────────────────────────────────────────────
@@ -79,6 +89,7 @@ class WeatherTrader:
         os.makedirs("data", exist_ok=True)
         log_path = f"logs/trades_{date.today().isoformat()}.log"
         self.log = self._setup_logger(log_path)
+        self._init_csv()
 
     # ── Setup ─────────────────────────────────────────────────────────────────
 
@@ -99,6 +110,58 @@ class WeatherTrader:
         log.addHandler(sh)
         log.propagate = False
         return log
+
+    # ── CSV trade log ─────────────────────────────────────────────────────────
+
+    def _init_csv(self):
+        """Create trades.csv with headers if it doesn't exist yet."""
+        if not os.path.exists(CSV_FILE):
+            with open(CSV_FILE, "w", newline="") as f:
+                csv.DictWriter(f, fieldnames=CSV_HEADERS).writeheader()
+
+    def _log_trade_csv(self, s: WeatherSignal, order_id: str, contracts: int):
+        """Append one row when an order is placed."""
+        row = {
+            "date":           date.today().isoformat(),
+            "ticker":         s.market.ticker,
+            "city":           s.market.city,
+            "temp_type":      s.market.temp_type,
+            "threshold":      s.market.threshold,
+            "strike_type":    s.market.strike_type,
+            "side":           s.side,
+            "entry_mode":     s.entry_mode,
+            "price_cents":    s.yes_price_cents,
+            "contracts":      contracts,
+            "entry_cost":     round(s.entry_cost * contracts, 4),
+            "model_prob":     round(s.model_prob, 4),
+            "effective_edge": round(s.effective_edge, 4),
+            "source":         s.source,
+            "notes":          " | ".join(s.notes),
+            "order_id":       order_id,
+            "placed_at":      datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "fee":            "",
+            "result":         "",
+            "pnl":            "",
+        }
+        with open(CSV_FILE, "a", newline="") as f:
+            csv.DictWriter(f, fieldnames=CSV_HEADERS).writerow(row)
+
+    def _update_csv_result(self, ticker: str, result: str, pnl: float, fee: float):
+        """Fill in result/pnl/fee for the most recent unfilled row for this ticker."""
+        rows = []
+        updated = False
+        with open(CSV_FILE, newline="") as f:
+            for row in csv.DictReader(f):
+                if not updated and row["ticker"] == ticker and row["result"] == "":
+                    row["result"] = result
+                    row["pnl"]    = round(pnl, 4)
+                    row["fee"]    = round(fee, 4)
+                    updated = True
+                rows.append(row)
+        with open(CSV_FILE, "w", newline="") as f:
+            writer = csv.DictWriter(f, fieldnames=CSV_HEADERS)
+            writer.writeheader()
+            writer.writerows(rows)
 
     def _acquire_pid_lock(self):
         """Prevent two instances running at once."""
@@ -351,6 +414,7 @@ class WeatherTrader:
                 f"  result={result.upper()}  → {'WIN ' if won else 'LOSS'}"
                 f"  P&L={pnl:+.2f}"
             )
+            self._update_csv_result(ticker, result, pnl, fee)
 
         self.log.info("  " + "─" * 62)
         if settled > 0 and total_cost > 0:
@@ -393,6 +457,7 @@ class WeatherTrader:
         forecast_age      = 999    # triggers immediate fetch on first scan
         scan_count        = 0
         start_time        = time.time()
+        account_balance   = None   # refreshed each scan for Kelly sizing
 
         # Seed traded_today from today's log to survive restarts
         log_path = f"logs/trades_{today_str}.log"
@@ -430,6 +495,12 @@ class WeatherTrader:
                     self.log.info(f"Forecasts + ensemble loaded for {n_cities} cities")
                 except Exception as e:
                     self.log.warning(f"Forecast refresh failed: {e}")
+
+            # Refresh balance for Kelly sizing
+            try:
+                account_balance = self.client.get_balance()
+            except Exception:
+                pass
 
             # Refresh METAR every scan (cheap, critical intraday signal)
             try:
@@ -498,19 +569,33 @@ class WeatherTrader:
                         self.log.info(f"    SKIP {ticker} — already traded/pending")
                         continue
 
+                    # Kelly sizing: scale contracts with edge, capped at --size
+                    if account_balance and not self.dry_run:
+                        contracts = min(
+                            self.trade_size,
+                            kelly_contracts(s.model_prob, s.entry_cost, account_balance),
+                        )
+                    else:
+                        contracts = self.trade_size
+
                     result = self._place_order(
                         ticker, s.side, s.yes_price_cents, s.entry_mode
                     )
                     order_id = result.get("order_id", "DRY-RUN")
+                    total_risk = s.entry_cost * contracts
 
                     self.log.info(
                         f"    {'[DRY] ' if self.dry_run else ''}ORDER PLACED  {ticker}"
                         f"  {s.side.upper()}  {s.entry_mode}"
                         f"  price={s.yes_price_cents}¢"
-                        f"  risk=${s.entry_cost:.2f}"
+                        f"  ×{contracts}"
+                        f"  risk=${total_risk:.2f}"
                         f"  id={order_id}"
                     )
                     traded_today.add(ticker)
+
+                    if not self.dry_run:
+                        self._log_trade_csv(s, order_id, contracts)
 
                     if s.entry_mode in ("PASSIVE", "MIDWAY") and not self.dry_run:
                         pending_orders[ticker] = {

@@ -1,0 +1,6 @@
+date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,contracts,entry_cost,model_prob,effective_edge,source,notes,order_id,placed_at,fee,result,pnl
+2026-03-28,KXHIGHTSATX-26MAR28-T68,San Antonio,high,68.0,less,yes,PASSIVE,4,1,0.04,0.933,0.898,NWS,,730e1324-bb7c-4601-ba46-d2e23405a46f,2026-03-28T17:10:45Z,0.01,,
+2026-03-28,KXHIGHTPHX-26MAR28-T93,Phoenix,high,93.0,less,yes,PASSIVE,4,1,0.04,0.5,0.465,NWS,,ccc5ebd9-90d0-4cc5-91f9-578477394c3d,2026-03-28T17:10:45Z,0.01,,
+2026-03-28,KXLOWTAUS-26MAR28-T56,Austin,low,56.0,greater,no,PASSIVE,74,1,0.26,0.309,-0.436,NWS,,94c0f10c-a466-4762-bfd2-6e6338636696,2026-03-28T17:10:45Z,0.02,,
+2026-03-28,KXHIGHTDAL-26MAR28-T58,Dallas,high,58.0,less,yes,MIDWAY,3,1,0.03,0.309,0.279,NWS,,784b6d8d-7a4a-4c44-8a59-d832002ba6f1,2026-03-28T17:10:45Z,0.0,,
+2026-03-28,KXHIGHTHOU-26MAR28-T74,Houston,high,74.0,less,yes,MIDWAY,4,1,0.04,0.309,0.274,NWS,,b98cc5fa-2b19-4bf1-ad3d-cd0199202d14,2026-03-28T17:10:45Z,0.01,,

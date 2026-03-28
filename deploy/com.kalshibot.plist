@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Kalshi Bot — macOS LaunchAgent
+
+  Runs the weather strategy daily at 8 AM CT (= 9 AM ET).
+  Stops after 8 hours (covers the full trading day).
+
+  INSTALL:
+      cp deploy/com.kalshibot.plist ~/Library/LaunchAgents/
+      launchctl load ~/Library/LaunchAgents/com.kalshibot.plist
+
+  CHECK STATUS:
+      launchctl list | grep kalshibot
+
+  STOP:
+      launchctl unload ~/Library/LaunchAgents/com.kalshibot.plist
+
+  MANUAL RUN (test first):
+      python deploy/run_bot.py --strategy weather_edge --live --once
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.kalshibot</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Library/Frameworks/Python.framework/Versions/3.13/bin/python3</string>
+        <string>/Users/alexgarrison/KalshiBotClaude/deploy/run_bot.py</string>
+        <string>--strategy</string>
+        <string>weather_edge</string>
+        <string>--live</string>
+        <string>--hours</string>
+        <string>8</string>
+    </array>
+
+    <!-- 8 AM CT = 9 AM ET (CDT, UTC-5). Adjust Hour if you change timezones. -->
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>8</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/alexgarrison/KalshiBotClaude</string>
+
+    <key>StandardOutPath</key>
+    <string>/Users/alexgarrison/KalshiBotClaude/logs/launchagent.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/Users/alexgarrison/KalshiBotClaude/logs/launchagent.log</string>
+
+    <!-- Keep environment variables — needed for .env loading -->
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/Library/Frameworks/Python.framework/Versions/3.13/bin:/usr/local/bin:/usr/bin:/bin</string>
+        <key>HOME</key>
+        <string>/Users/alexgarrison</string>
+    </dict>
+
+    <!-- Don't restart if it crashes — let it run fresh next morning -->
+    <key>RunAtLoad</key>
+    <false/>
+</dict>
+</plist>

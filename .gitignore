@@ -24,5 +24,5 @@ venv/
 .claude/
 
 # Data files
-data/*.csv
 data/*.db
+# Note: data/trades.csv IS committed — it's our trade history
