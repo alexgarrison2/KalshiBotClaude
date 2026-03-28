@@ -145,6 +145,26 @@ class WeatherTrader:
         }
         with open(CSV_FILE, "a", newline="") as f:
             csv.DictWriter(f, fieldnames=CSV_HEADERS).writerow(row)
+        self._push_csv()
+
+    def _push_csv(self):
+        """Commit and push trades.csv to GitHub so it's queryable from any device."""
+        import subprocess
+        try:
+            root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            subprocess.run(["git", "-C", root, "add", "data/trades.csv"],
+                           check=True, capture_output=True)
+            # Only commit if there are staged changes
+            diff = subprocess.run(["git", "-C", root, "diff", "--cached", "--quiet"],
+                                  capture_output=True)
+            if diff.returncode != 0:
+                subprocess.run(["git", "-C", root, "commit", "-m", "auto: trade log update"],
+                               check=True, capture_output=True)
+                subprocess.run(["git", "-C", root, "push"],
+                               check=True, capture_output=True)
+                self.log.info("    trades.csv pushed to GitHub")
+        except Exception as e:
+            self.log.warning(f"Could not push trades.csv: {e}")
 
     def _update_csv_result(self, ticker: str, result: str, pnl: float, fee: float):
         """Fill in result/pnl/fee for the most recent unfilled row for this ticker."""
@@ -423,6 +443,7 @@ class WeatherTrader:
                 f"  P&L={pnl:+.2f}"
             )
             self._update_csv_result(ticker, result, pnl, fee)
+        self._push_csv()
 
         self.log.info("  " + "─" * 62)
         if settled > 0 and total_cost > 0:
