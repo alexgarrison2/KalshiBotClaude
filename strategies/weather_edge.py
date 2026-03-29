@@ -359,6 +359,9 @@ def evaluate_all_markets(
 
 # ── Kelly Criterion position sizing ──────────────────────────────────────────
 
+MAKER_FEE_RATE = 0.0175  # Kalshi maker fee = 7% × 25% discount
+
+
 def kelly_contracts(
     model_prob: float,
     entry_cost: float,
@@ -369,17 +372,20 @@ def kelly_contracts(
     """
     Quarter-Kelly position sizing for binary prediction markets.
 
-    For a YES contract at price c paying $1 on win:
-        f* = (p - c) / (1 - c)
-    where p = model probability, c = entry cost per contract.
+    For a YES contract at price c, net win after maker fee:
+        net_win = (1 - c) - 0.0175 * c * (1 - c)  = (1 - c)(1 - 0.0175c)
+        f* = (p * net_win - (1 - p) * c) / net_win
 
     We use quarter-Kelly (0.25×) by default until we have 100+ trades of
     live history to validate calibration. Returns at least 1, at most max_contracts.
     """
     c = entry_cost
-    if balance <= 0 or c <= 0 or c >= 1 or model_prob <= c:
+    if balance <= 0 or c <= 0 or c >= 1:
         return 1
-    full_kelly = (model_prob - c) / (1.0 - c)
+    net_win = (1.0 - c) * (1.0 - MAKER_FEE_RATE * c)
+    if net_win <= 0 or model_prob * net_win <= (1.0 - model_prob) * c:
+        return 1
+    full_kelly = (model_prob * net_win - (1.0 - model_prob) * c) / net_win
     dollar_bet = balance * full_kelly * kelly_fraction
     contracts  = max(1, min(max_contracts, int(dollar_bet / c)))
     return contracts
