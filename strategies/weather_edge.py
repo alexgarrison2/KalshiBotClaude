@@ -63,9 +63,12 @@ SKIP_IF_CLOSE_MINS = 60     # skip markets closing within N minutes
 METAR_CERTAIN      = 0.97   # near-certainty when METAR confirms outcome
 METAR_CERTAIN_NO   = 0.03   # near-certainty when METAR rules it out
 
-CALIB_BIAS_LO      = 0.35   # lower bound of historically mispriced YES range
+CALIB_BIAS_LO      = 0.35   # lower bound of bias range (kept for reference)
 CALIB_BIAS_HI      = 0.65   # upper bound
-CALIB_BIAS_EDGE    = 0.15   # extra edge credit when calibration bias applies
+CALIB_BIAS_EDGE    = 0.00   # VALIDATED 2026-03-29: YES wins 50.7% in 35–65¢ range
+                             # (142 markets, 30 days) — market is well-calibrated here.
+                             # Original "4–21% win rate" claim does not hold.
+                             # Layer 4 disabled to remove phantom edge.
 
 ENSEMBLE_BOOST     = 0.10   # extra edge when all 3 models agree
 
