@@ -9,7 +9,7 @@
       "morning": 7.81
     },
     "3": {
-      "afternoon": 5.98,
+      "afternoon": 6.03,
       "morning": 8.0
     },
     "4": {
@@ -59,8 +59,8 @@
       "morning": 5.61
     },
     "3": {
-      "afternoon": 5.33,
-      "morning": 8.0
+      "afternoon": 5.19,
+      "morning": 7.79
     },
     "4": {
       "afternoon": 3.22,
@@ -109,7 +109,7 @@
       "morning": 8.0
     },
     "3": {
-      "afternoon": 7.46,
+      "afternoon": 7.44,
       "morning": 8.0
     },
     "4": {
@@ -201,52 +201,52 @@
   },
   "KXLOWTNYC": {
     "1": {
-      "afternoon": 6.26,
+      "afternoon": 6.37,
       "morning": 8.0
     },
     "2": {
-      "afternoon": 5.56,
+      "afternoon": 5.61,
       "morning": 8.0
     },
     "3": {
-      "afternoon": 4.1,
-      "morning": 6.15
+      "afternoon": 4.13,
+      "morning": 6.2
     },
     "4": {
-      "afternoon": 4.33,
-      "morning": 6.5
+      "afternoon": 5.33,
+      "morning": 8.0
     },
     "5": {
-      "afternoon": 2.53,
-      "morning": 3.79
+      "afternoon": 2.71,
+      "morning": 4.06
     },
     "6": {
-      "afternoon": 4.43,
-      "morning": 6.64
+      "afternoon": 4.65,
+      "morning": 6.98
     },
     "7": {
-      "afternoon": 2.06,
-      "morning": 3.09
+      "afternoon": 1.87,
+      "morning": 2.81
     },
     "8": {
       "afternoon": 3.02,
       "morning": 4.53
     },
     "9": {
-      "afternoon": 2.82,
-      "morning": 4.23
+      "afternoon": 2.36,
+      "morning": 3.54
     },
     "10": {
-      "afternoon": 3.88,
-      "morning": 5.82
+      "afternoon": 3.73,
+      "morning": 5.59
     },
     "11": {
-      "afternoon": 4.0,
-      "morning": 6.0
+      "afternoon": 3.82,
+      "morning": 5.73
     },
     "12": {
-      "afternoon": 3.41,
-      "morning": 5.12
+      "afternoon": 3.7,
+      "morning": 5.55
     }
   },
   "KXHIGHTDAL": {
@@ -259,7 +259,7 @@
       "morning": 8.0
     },
     "3": {
-      "afternoon": 5.56,
+      "afternoon": 6.08,
       "morning": 8.0
     },
     "4": {
@@ -309,7 +309,7 @@
       "morning": 7.15
     },
     "3": {
-      "afternoon": 5.56,
+      "afternoon": 5.64,
       "morning": 8.0
     },
     "4": {
@@ -359,8 +359,8 @@
       "morning": 8.0
     },
     "3": {
-      "afternoon": 5.28,
-      "morning": 7.92
+      "afternoon": 5.16,
+      "morning": 7.74
     },
     "4": {
       "afternoon": 5.67,
@@ -409,8 +409,8 @@
       "morning": 7.71
     },
     "3": {
-      "afternoon": 4.78,
-      "morning": 7.17
+      "afternoon": 4.91,
+      "morning": 7.37
     },
     "4": {
       "afternoon": 4.12,
@@ -559,8 +559,8 @@
       "morning": 8.0
     },
     "3": {
-      "afternoon": 3.5,
-      "morning": 5.25
+      "afternoon": 3.47,
+      "morning": 5.21
     },
     "4": {
       "afternoon": 2.77,
@@ -609,8 +609,8 @@
       "morning": 4.65
     },
     "3": {
-      "afternoon": 2.12,
-      "morning": 3.18
+      "afternoon": 2.08,
+      "morning": 3.12
     },
     "4": {
       "afternoon": 1.63,
@@ -659,8 +659,8 @@
       "morning": 6.76
     },
     "3": {
-      "afternoon": 3.56,
-      "morning": 5.34
+      "afternoon": 3.57,
+      "morning": 5.35
     },
     "4": {
       "afternoon": 3.43,
@@ -709,8 +709,8 @@
       "morning": 8.0
     },
     "3": {
-      "afternoon": 4.33,
-      "morning": 6.5
+      "afternoon": 4.34,
+      "morning": 6.51
     },
     "4": {
       "afternoon": 2.93,
@@ -759,7 +759,7 @@
       "morning": 8.0
     },
     "3": {
-      "afternoon": 7.4,
+      "afternoon": 7.54,
       "morning": 8.0
     },
     "4": {
@@ -809,7 +809,7 @@
       "morning": 8.0
     },
     "3": {
-      "afternoon": 7.13,
+      "afternoon": 6.96,
       "morning": 8.0
     },
     "4": {
@@ -859,8 +859,8 @@
       "morning": 8.0
     },
     "3": {
-      "afternoon": 4.57,
-      "morning": 6.86
+      "afternoon": 4.65,
+      "morning": 6.98
     },
     "4": {
       "afternoon": 6.01,
@@ -909,7 +909,7 @@
       "morning": 5.64
     },
     "3": {
-      "afternoon": 7.1,
+      "afternoon": 7.14,
       "morning": 8.0
     },
     "4": {
@@ -959,8 +959,8 @@
       "morning": 8.0
     },
     "3": {
-      "afternoon": 5.17,
-      "morning": 7.75
+      "afternoon": 5.12,
+      "morning": 7.68
     },
     "4": {
       "afternoon": 4.22,
