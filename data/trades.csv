@@ -13,3 +13,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-03-29,KXHIGHTDAL-26MAR29-T81,Dallas,high,81.0,less,yes,MIDWAY,18,1,0.18,0.5,0.325,NWS,,0a46a87c-0a92-4050-b3f7-1d08a4157e92,2026-03-29T12:21:11Z,,,
 2026-03-29,KXHIGHTDC-26MAR29-T58,Washington DC,high,58.0,less,yes,MIDWAY,3,1,0.03,0.3538,0.3238,NWS,,df12c90f-f5be-4579-ad03-35fc200fb5fc,2026-03-29T12:21:13Z,,,
 2026-03-29,KXHIGHTOKC-26MAR29-T79,Oklahoma City,high,79.0,less,yes,MIDWAY,4,1,0.04,0.3538,0.3188,NWS,,74bb7eef-0bcd-4bff-8c37-5c779da07b8b,2026-03-29T12:21:14Z,,,
+2026-03-29,KXHIGHTMIN-26MAR29-T65,Minneapolis,high,65.0,less,yes,MIDWAY,4,1,0.04,0.3538,0.3188,NWS,,e0d0c4c9-53be-4ebe-9f6a-81546d3a8670,2026-03-29T12:21:16Z,,,
