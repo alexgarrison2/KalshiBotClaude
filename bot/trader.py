@@ -484,6 +484,7 @@ class WeatherTrader:
         ensemble_data:    dict = {}
         metar_data:       dict = {}
         forecast_age      = 999    # triggers immediate fetch on first scan
+        last_forecast_ts  = 0.0    # epoch of last successful NWS fetch
         scan_count        = 0
         start_time        = time.time()
         account_balance   = None   # refreshed each scan for Kelly sizing
@@ -520,6 +521,7 @@ class WeatherTrader:
                     series_forecasts = fetch_all_forecasts()
                     ensemble_data    = fetch_ensemble_forecasts()
                     forecast_age     = 0
+                    last_forecast_ts = time.time()
                     n_cities = len(set(cfg["city"] for cfg in SERIES_CONFIG.values()))
                     self.log.info(f"Forecasts + ensemble loaded for {n_cities} cities")
                 except Exception as e:
@@ -561,6 +563,18 @@ class WeatherTrader:
                 )
             except Exception as e:
                 self.log.warning(f"Market scan failed: {e}")
+                if not loop:
+                    break
+                time.sleep(self.poll_interval)
+                continue
+
+            # Guard: skip new signals if forecast data is stale (live mode only)
+            forecast_age_secs = time.time() - last_forecast_ts
+            if not self.dry_run and last_forecast_ts > 0 and forecast_age_secs > 1800:
+                self.log.warning(
+                    f"⚠ Forecast data is {forecast_age_secs/60:.0f} min old — "
+                    f"skipping new signals until refresh succeeds."
+                )
                 if not loop:
                     break
                 time.sleep(self.poll_interval)

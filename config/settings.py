@@ -43,7 +43,7 @@ RSI_OVERSOLD = 30       # Buy signal when RSI drops below this
 RSI_OVERBOUGHT = 70     # Sell signal when RSI goes above this
 
 # Weather Edge Strategy
-WEATHER_EDGE_THRESHOLD = 0.10   # Only trade when market disagrees with forecast by 10%+
+# (thresholds live in strategies/weather_edge.py — MIN_EDGE = 0.20)
 
 # ── Timing ──────────────────────────────────────────────────────────
 # How often the bot checks for new signals (in seconds)

@@ -11,15 +11,57 @@ All functions return plain dicts. They are called once per scan loop and
 the results are passed down to the strategy for signal evaluation.
 """
 import json
+import logging
 import math
+import random
 import time
 import requests
 from datetime import date, datetime
 from typing import Optional
 from pathlib import Path
 
+log = logging.getLogger(__name__)
+
 NWS_HEADERS    = {"User-Agent": "kalshi-bot/1.0", "Accept": "application/geo+json"}
 OPEN_METEO_URL = "https://api.open-meteo.com/v1/forecast"
+
+_BACKOFF_BASE    = 1.0   # seconds — first retry wait
+_BACKOFF_MAX     = 16.0  # seconds — cap on backoff
+_BACKOFF_RETRIES = 3     # number of retries on 429 / 5xx
+
+
+def _http_get(url: str, **kwargs) -> requests.Response:
+    """
+    GET with exponential backoff on rate-limit (429) or server errors (5xx).
+
+    On success returns the Response. On permanent failure (4xx other than
+    429, or exhausted retries) raises the last exception / returns the
+    last bad response for the caller to handle.
+    """
+    delay = _BACKOFF_BASE
+    for attempt in range(_BACKOFF_RETRIES + 1):
+        try:
+            r = requests.get(url, **kwargs)
+            if r.status_code in (429,) or r.status_code >= 500:
+                if attempt < _BACKOFF_RETRIES:
+                    jitter = random.uniform(0, delay * 0.3)
+                    log.warning(
+                        f"HTTP {r.status_code} from {url!r} — "
+                        f"retry {attempt+1}/{_BACKOFF_RETRIES} in {delay:.1f}s"
+                    )
+                    time.sleep(delay + jitter)
+                    delay = min(delay * 2, _BACKOFF_MAX)
+                    continue
+            return r
+        except requests.RequestException as exc:
+            if attempt < _BACKOFF_RETRIES:
+                jitter = random.uniform(0, delay * 0.3)
+                log.warning(f"Request error for {url!r}: {exc} — retry {attempt+1}/{_BACKOFF_RETRIES}")
+                time.sleep(delay + jitter)
+                delay = min(delay * 2, _BACKOFF_MAX)
+            else:
+                raise
+    return r  # exhausted retries, return last bad response
 
 _CONFIG_PATH = Path(__file__).parent / "series_config.json"
 with open(_CONFIG_PATH) as _f:
@@ -70,6 +112,7 @@ def fetch_all_forecasts() -> dict:
                 city_cache[city] = fetch_nws_forecast(cfg["forecast_url"])
                 time.sleep(0.3)
             except Exception as e:
+                log.warning(f"NWS forecast fetch failed for {city}: {e}")
                 city_cache[city] = {}
         result[series] = city_cache[city]
 
@@ -98,17 +141,19 @@ def fetch_metar_observations() -> dict:
         seen_cities.add(city)
 
         try:
-            r = requests.get(
+            r = _http_get(
                 f"https://api.weather.gov/stations/{station}/observations/latest",
                 headers=NWS_HEADERS,
                 timeout=10,
             )
             if r.status_code != 200:
+                log.warning(f"METAR fetch for {city} ({station}) returned HTTP {r.status_code}")
                 continue
             props    = r.json().get("properties", {})
             temp_c   = props.get("temperature", {}).get("value")
             obs_time = props.get("timestamp", "")[:16]
             if temp_c is None:
+                log.warning(f"METAR for {city} ({station}): temperature value missing in response")
                 continue
             temp_f = temp_c * 9 / 5 + 32
             city_obs[city] = {
@@ -117,8 +162,8 @@ def fetch_metar_observations() -> dict:
                 "station":  station,
             }
             time.sleep(0.2)
-        except Exception:
-            pass
+        except Exception as e:
+            log.warning(f"METAR fetch failed for {city} ({station}): {e}")
 
     return city_obs
 
@@ -145,7 +190,7 @@ def fetch_ensemble_forecasts() -> dict:
         seen_cities.add(city)
 
         try:
-            r = requests.get(OPEN_METEO_URL, params={
+            r = _http_get(OPEN_METEO_URL, params={
                 "latitude":         cfg["lat"],
                 "longitude":        cfg["lon"],
                 "daily":            "temperature_2m_max,temperature_2m_min",
@@ -155,6 +200,7 @@ def fetch_ensemble_forecasts() -> dict:
                 "timezone":         "America/New_York",
             }, timeout=15)
             if r.status_code != 200:
+                log.warning(f"Open-Meteo ensemble fetch for {city} returned HTTP {r.status_code}")
                 continue
 
             data      = r.json()
@@ -178,8 +224,8 @@ def fetch_ensemble_forecasts() -> dict:
 
             city_ensemble[city] = city_data
             time.sleep(0.3)
-        except Exception:
-            pass
+        except Exception as e:
+            log.warning(f"Ensemble fetch failed for {city}: {e}")
 
     return city_ensemble
 
