@@ -7,3 +7,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-03-29,KXLOWTLAX-26MAR29-T57,Los Angeles,low,57.0,less,no,PASSIVE,48,1,0.52,0.1727,-0.4573,NWS,[CALIB BIAS +15¢ NO edge],48e55afa-7f73-4aae-832f-bbaeeeedf706,2026-03-29T12:21:02Z,,,
 2026-03-29,KXHIGHTPHX-26MAR29-T95,Phoenix,high,95.0,less,yes,PASSIVE,6,1,0.06,0.5,0.44,NWS,,983d9922-d4ae-40a0-8178-5e110355f8e5,2026-03-29T12:21:04Z,,,
 2026-03-29,KXHIGHTSATX-26MAR29-T81,San Antonio,high,81.0,less,yes,PASSIVE,2,1,0.02,0.4445,0.4195,NWS,,5c666018-e3ce-454e-845b-751bcd5e93dd,2026-03-29T12:21:05Z,,,
+2026-03-29,KXHIGHTSFO-26MAR29-T78,San Francisco,high,78.0,greater,no,MIDWAY,86,1,0.14,0.5,-0.355,NWS,,094e29d6-5fda-4498-9f78-6da302a16f6c,2026-03-29T12:21:06Z,,,
