@@ -34,10 +34,10 @@
   "KXLOWTNYC": {
     "city": "New York City",
     "temp_type": "low",
-    "lat": 40.6397,
-    "lon": -73.7789,
-    "station": "KJFK",
-    "forecast_url": "https://api.weather.gov/gridpoints/OKX/35,33/forecast"
+    "lat": 40.7812,
+    "lon": -73.9665,
+    "station": "KLGA",
+    "forecast_url": "https://api.weather.gov/gridpoints/OKX/34,38/forecast"
   },
   "KXHIGHTDAL": {
     "city": "Dallas",
