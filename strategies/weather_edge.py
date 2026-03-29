@@ -70,7 +70,10 @@ CALIB_BIAS_EDGE    = 0.00   # VALIDATED 2026-03-29: YES wins 50.7% in 35–65¢ 
                              # Original "4–21% win rate" claim does not hold.
                              # Layer 4 disabled to remove phantom edge.
 
-ENSEMBLE_BOOST     = 0.10   # extra edge when all 3 models agree
+ENSEMBLE_BOOST        = 0.10   # edge boost when all 3 models within 10pp
+ENSEMBLE_SOFT_BOOST   = 0.05   # half boost when all 3 models within 20pp
+ENSEMBLE_AGREE_FULL   = 0.10   # max spread for full boost
+ENSEMBLE_AGREE_SOFT   = 0.20   # max spread for half boost (above this → skip)
 
 KELLY_FRACTION     = 0.25   # quarter-Kelly (conservative until 100+ trade history)
 KELLY_MAX_CONTRACTS = 10    # hard cap per trade regardless of Kelly output
@@ -303,15 +306,27 @@ def evaluate_market(
             gfs_prob   = model_prob(gfs_fc,   market.threshold, market.strike_type, effective_sigma)
             ecmwf_prob = model_prob(ecmwf_fc, market.threshold, market.strike_type, effective_sigma)
 
-            if (prob > 0.5) == (gfs_prob > 0.5) == (ecmwf_prob > 0.5):
-                boost = ENSEMBLE_BOOST
-                effective_edge += boost if effective_edge > 0 else -boost
-                notes.append(
-                    f"GFS={gfs_fc:.0f}° ECMWF={ecmwf_fc:.0f}° "
-                    f"[ALL AGREE +{boost*100:.0f}¢]"
-                )
+            # Max pairwise spread across all three model probabilities
+            max_spread = max(
+                abs(prob - gfs_prob),
+                abs(prob - ecmwf_prob),
+                abs(gfs_prob - ecmwf_prob),
+            )
+
+            if max_spread > ENSEMBLE_AGREE_SOFT:
+                return None  # models too far apart — skip
+            elif max_spread <= ENSEMBLE_AGREE_FULL:
+                boost = ENSEMBLE_BOOST       # all within 10pp → full +10¢
+                tag   = "ALL AGREE"
             else:
-                return None  # models disagree — skip
+                boost = ENSEMBLE_SOFT_BOOST  # within 20pp → soft +5¢
+                tag   = "SOFT AGREE"
+
+            effective_edge += boost if effective_edge > 0 else -boost
+            notes.append(
+                f"GFS={gfs_fc:.0f}° ECMWF={ecmwf_fc:.0f}° "
+                f"[{tag} +{boost*100:.0f}¢]"
+            )
 
     # ── Layer 4: Calibration bias ─────────────────────────────────────────────
     if CALIB_BIAS_LO <= market.mid <= CALIB_BIAS_HI and effective_edge < 0:
