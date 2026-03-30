@@ -37,3 +37,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-03-30,KXHIGHTATL-26MAR30-T72,Atlanta,high,72.0,less,yes,MIDWAY,4,1,0.04,0.3724,0.3374,NWS,,1e9036fc-5b90-4818-8a72-b999a40c5f2d,2026-03-30T13:52:54Z,,,
 2026-03-30,KXHIGHTSEA-26MAR30-T48,Seattle,high,48.0,less,yes,MIDWAY,10,1,0.1,0.393,0.298,NWS,,87dcfa4a-fd9f-4f48-afd0-5a7cca79d20e,2026-03-30T13:52:55Z,,,
 2026-03-30,KXHIGHTHOU-26MAR30-T82,Houston,high,82.0,less,yes,MIDWAY,4,1,0.04,0.3202,0.2802,NWS,,beeadbe5-41b4-4bed-bfed-2f72b28a0e9e,2026-03-30T13:52:56Z,,,
+2026-03-30,KXHIGHTDAL-26MAR30-T83,Dallas,high,83.0,less,yes,MIDWAY,7,1,0.07,0.2796,0.2096,NWS,,9faffcb3-818a-4c87-9198-0310f54023ad,2026-03-30T13:52:56Z,,,
