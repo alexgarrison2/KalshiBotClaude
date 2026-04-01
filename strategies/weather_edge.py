@@ -52,7 +52,7 @@ console = Console()
 ET = ZoneInfo("America/New_York")
 
 # ── Constants (match Taylor's trader.py exactly) ──────────────────────────────
-MIN_EDGE           = 0.20   # 20¢ minimum edge to enter
+MIN_EDGE           = 0.25   # 25¢ minimum edge to enter (raised from 0.20)
 EDGE_PASSIVE       = 0.40   # ≥ 40¢ → place at mid (passive maker)
 MIN_VOLUME         = 1_000  # minimum 24-hour contracts
 SIGMA_EARLY        = 3.0    # °F — before 11 AM ET
@@ -74,6 +74,11 @@ ENSEMBLE_BOOST        = 0.10   # edge boost when all 3 models within 10pp
 ENSEMBLE_SOFT_BOOST   = 0.05   # half boost when all 3 models within 20pp
 ENSEMBLE_AGREE_FULL   = 0.10   # max spread for full boost
 ENSEMBLE_AGREE_SOFT   = 0.20   # max spread for half boost (above this → skip)
+
+MIN_Z_SCORE        = 0.75   # NWS forecast must be ≥ 0.75σ from threshold for conviction
+                             # z=0 means forecast=threshold → model_prob=50% → no directional edge
+MARKET_BLEND_WEIGHT = 0.15  # 15% weight on market price when forming final probability
+                             # prevents model from straying far from consensus without evidence
 
 KELLY_FRACTION     = 0.25   # quarter-Kelly (conservative until 100+ trade history)
 KELLY_MAX_CONTRACTS = 10    # hard cap per trade regardless of Kelly output
@@ -268,28 +273,52 @@ def evaluate_market(
     # fall back to the passed-in `sigma` (original hardcoded defaults).
     now_hour        = datetime.now(ET).hour
     effective_sigma = get_calibrated_sigma(market.series, now_hour)
+
+    # ── z-score gate: require meaningful directional conviction ───────────────
+    # When z ≈ 0, the NWS forecast sits exactly at the threshold → model_prob
+    # returns 50% regardless of sigma.  The market prices these at 2–18¢ because
+    # it incorporates seasonal context the pure normCDF model lacks.  Entering
+    # with 50% model vs 5% market is phantom edge, not real edge.
+    z_raw = (forecast - market.threshold) / effective_sigma
+    if abs(z_raw) < MIN_Z_SCORE:
+        return None  # no directional conviction — skip
+
     prob   = model_prob(forecast, market.threshold, market.strike_type, effective_sigma)
     source = "NWS"
     notes  = []
 
     # ── Layer 1: METAR intraday override (same-day only) ─────────────────────
+    # Uses day_high / day_low (running daily extremes) so a threshold
+    # crossing is locked in even if the current temp drops back.
     if metar_obs and market.city in metar_obs and ed == date.today():
-        obs = metar_obs[market.city]["obs_temp"]
+        city_metar = metar_obs[market.city]
+        obs      = city_metar["obs_temp"]
+        day_high = city_metar.get("day_high", obs)
+        day_low  = city_metar.get("day_low", obs)
 
         if market.temp_type == "high":
-            if market.strike_type == "greater" and obs > market.threshold:
+            if market.strike_type == "greater" and day_high > market.threshold:
                 prob, source = METAR_CERTAIN, "METAR↑"
-                notes.append(f"obs={obs:.1f}°>{market.threshold:.0f}° ✓YES")
-            elif market.strike_type == "less" and obs > market.threshold:
+                notes.append(f"day_high={day_high:.1f}°>{market.threshold:.0f}° ✓YES")
+            elif market.strike_type == "less" and day_high > market.threshold:
                 prob, source = METAR_CERTAIN_NO, "METAR↑"
-                notes.append(f"obs={obs:.1f}°>{market.threshold:.0f}° ✓NO")
+                notes.append(f"day_high={day_high:.1f}°>{market.threshold:.0f}° ✓NO")
         elif market.temp_type == "low":
-            if market.strike_type == "less" and obs < market.threshold:
+            if market.strike_type == "less" and day_low < market.threshold:
                 prob, source = METAR_CERTAIN, "METAR↓"
-                notes.append(f"obs={obs:.1f}°<{market.threshold:.0f}° ✓YES")
-            elif market.strike_type == "greater" and obs < market.threshold:
+                notes.append(f"day_low={day_low:.1f}°<{market.threshold:.0f}° ✓YES")
+            elif market.strike_type == "greater" and day_low < market.threshold:
                 prob, source = METAR_CERTAIN_NO, "METAR↓"
-                notes.append(f"obs={obs:.1f}°<{market.threshold:.0f}° ✓NO")
+                notes.append(f"day_low={day_low:.1f}°<{market.threshold:.0f}° ✓NO")
+
+    # ── Bayesian market blend ─────────────────────────────────────────────────
+    # Lightly pull model_prob toward the market's implied probability.
+    # Rationale: the market aggregates information the normCDF model lacks
+    # (synoptic patterns, seasonal priors, recent trends).  A 15% blend
+    # prevents extreme model–market divergence without ceding model authority.
+    # Does NOT apply to METAR-confirmed trades (prob already near 0.97/0.03).
+    if source == "NWS":
+        prob = (1.0 - MARKET_BLEND_WEIGHT) * prob + MARKET_BLEND_WEIGHT * market.mid
 
     raw_edge       = prob - market.mid
     effective_edge = raw_edge
@@ -365,14 +394,32 @@ def evaluate_all_markets(
     metar_obs: dict,
     ensemble: dict,
 ) -> list:
-    """Evaluate all open markets, return WeatherSignals sorted by |edge| descending."""
+    """
+    Evaluate all open markets, return WeatherSignals sorted by |edge| descending.
+
+    Deduplication: only the highest-edge signal per (city, temp_type, event_date)
+    is kept.  This prevents correlated bets on the same city's temperature
+    (e.g., DC high T58 AND DC high T65 on the same day), which amplify model
+    error rather than diversifying it.
+    """
     signals = []
     for m in markets:
         sig = evaluate_market(m, series_forecasts, sigma, metar_obs, ensemble)
         if sig:
             signals.append(sig)
     signals.sort(key=lambda s: abs(s.effective_edge), reverse=True)
-    return signals
+
+    # Keep only the best signal per (city, temp_type, event_date)
+    seen: set = set()
+    deduped: list = []
+    for sig in signals:
+        m   = sig.market
+        key = (m.city, m.temp_type, m.event_date)
+        if key not in seen:
+            seen.add(key)
+            deduped.append(sig)
+
+    return deduped
 
 
 # ── Kelly Criterion position sizing ──────────────────────────────────────────

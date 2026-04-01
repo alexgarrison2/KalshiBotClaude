@@ -29,6 +29,12 @@ _BACKOFF_BASE    = 1.0   # seconds — first retry wait
 _BACKOFF_MAX     = 16.0  # seconds — cap on backoff
 _BACKOFF_RETRIES = 3     # number of retries on 429 / 5xx
 
+# ── In-memory daily extremes cache (running high/low per city) ───────────────
+_metar_day_extremes: dict = {}        # {city: {"day_high": float, "day_low": float}}
+_metar_last_full_fetch: float = 0.0   # timestamp of last full-day history pull
+_metar_current_date: str = ""         # detect day rollover → reset cache
+_FULL_FETCH_INTERVAL = 600            # 10 minutes
+
 
 def _http_get(url: str, **kwargs) -> requests.Response:
     """
@@ -121,17 +127,68 @@ def fetch_all_forecasts() -> dict:
 
 # ── METAR Intraday Observations ───────────────────────────────────────────────
 
+def _fetch_full_day_observations(station: str) -> tuple[Optional[float], Optional[float]]:
+    """
+    Fetch ALL of today's observations for a station and return (max_f, min_f).
+
+    Calls GET /stations/{station}/observations?start={today}T00:00:00Z
+    Returns (None, None) on failure.
+    """
+    today_iso = date.today().isoformat()
+    try:
+        r = _http_get(
+            f"https://api.weather.gov/stations/{station}/observations"
+            f"?start={today_iso}T00:00:00Z",
+            headers=NWS_HEADERS,
+            timeout=15,
+        )
+        if r.status_code != 200:
+            log.warning(f"Full-day obs for {station} returned HTTP {r.status_code}")
+            return None, None
+
+        features = r.json().get("features", [])
+        temps_f = []
+        for feat in features:
+            temp_c = feat.get("properties", {}).get("temperature", {}).get("value")
+            if temp_c is not None:
+                temps_f.append(temp_c * 9 / 5 + 32)
+
+        if not temps_f:
+            return None, None
+        return max(temps_f), min(temps_f)
+    except Exception as e:
+        log.warning(f"Full-day obs fetch failed for {station}: {e}")
+        return None, None
+
+
 def fetch_metar_observations() -> dict:
     """
-    Fetch current observed temperature for each city's airport station.
+    Fetch current observed temperature for each city's airport station
+    and track the running daily high/low across all scans.
 
-    Returns: { city_name: {"obs_temp": float, "obs_time": str, "station": str} }
+    Returns: { city_name: {
+        "obs_temp": float,   # current reading
+        "obs_time": str,
+        "station":  str,
+        "day_high": float,   # max observed today
+        "day_low":  float,   # min observed today
+    } }
 
     Used by Strategy #1: if the observed high/low already confirms the
     contract outcome, we override model_prob to near-certainty.
     """
+    global _metar_day_extremes, _metar_last_full_fetch, _metar_current_date
+
+    # Reset cache on day rollover
+    today_str = date.today().isoformat()
+    if today_str != _metar_current_date:
+        _metar_day_extremes = {}
+        _metar_last_full_fetch = 0.0
+        _metar_current_date = today_str
+
     city_obs:    dict = {}
     seen_cities: set  = set()
+    city_stations: dict = {}  # track station per city for full-day fetch
 
     for series, cfg in SERIES_CONFIG.items():
         city    = cfg["city"]
@@ -139,6 +196,7 @@ def fetch_metar_observations() -> dict:
         if city in seen_cities or not station:
             continue
         seen_cities.add(city)
+        city_stations[city] = station
 
         try:
             r = _http_get(
@@ -156,6 +214,14 @@ def fetch_metar_observations() -> dict:
                 log.warning(f"METAR for {city} ({station}): temperature value missing in response")
                 continue
             temp_f = temp_c * 9 / 5 + 32
+
+            # Update running daily extremes
+            prev = _metar_day_extremes.get(city, {})
+            _metar_day_extremes[city] = {
+                "day_high": max(temp_f, prev.get("day_high", temp_f)),
+                "day_low":  min(temp_f, prev.get("day_low", temp_f)),
+            }
+
             city_obs[city] = {
                 "obs_temp": round(temp_f, 1),
                 "obs_time": obs_time,
@@ -164,6 +230,27 @@ def fetch_metar_observations() -> dict:
             time.sleep(0.2)
         except Exception as e:
             log.warning(f"METAR fetch failed for {city} ({station}): {e}")
+
+    # Every 10 min: backfill from full day's observation history
+    now = time.time()
+    if now - _metar_last_full_fetch > _FULL_FETCH_INTERVAL:
+        _metar_last_full_fetch = now
+        for city, station in city_stations.items():
+            day_max, day_min = _fetch_full_day_observations(station)
+            if day_max is not None:
+                prev = _metar_day_extremes.get(city, {})
+                _metar_day_extremes[city] = {
+                    "day_high": max(day_max, prev.get("day_high", day_max)),
+                    "day_low":  min(day_min, prev.get("day_low", day_min)),
+                }
+            time.sleep(0.2)
+        log.info(f"Full-day METAR backfill complete for {len(city_stations)} cities")
+
+    # Attach day_high / day_low to return dict
+    for city in city_obs:
+        extremes = _metar_day_extremes.get(city, {})
+        city_obs[city]["day_high"] = round(extremes.get("day_high", city_obs[city]["obs_temp"]), 1)
+        city_obs[city]["day_low"]  = round(extremes.get("day_low",  city_obs[city]["obs_temp"]), 1)
 
     return city_obs
 
