@@ -51,3 +51,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-04-01,KXLOWTPHIL-26APR01-T61,Philadelphia,low,61.0,less,yes,PASSIVE,40,1,0.4,0.9092,0.5142,NWS,,d6f42c0e-9ced-4cad-907f-598bbd3d8269,2026-04-01T12:21:16Z,,,
 2026-04-01,KXHIGHTBOS-26APR01-T70,Boston,high,70.0,greater,no,MIDWAY,43,1,0.57,0.0668,-0.3582,NWS,[CALIB BIAS +0¢ NO edge],86d84d92-9823-4284-8be6-febfbfaa6316,2026-04-01T12:21:16Z,,,
 2026-04-01,KXHIGHTOKC-26APR01-T81,Oklahoma City,high,81.0,less,no,MIDWAY,32,1,0.68,0.0681,-0.2569,NWS,,3baf37eb-f88d-4b11-aa3b-f9950c1afaff,2026-04-01T18:27:26Z,,,
+2026-04-02,KXHIGHTMIN-26APR02-T40,Minneapolis,high,40.0,greater,yes,PASSIVE,2,1,0.02,0.97,0.95,METAR↑,day_high=42.8°>40° ✓YES,a181a186-e532-4cb8-ae9b-3bea55177d33,2026-04-02T12:28:00Z,,,
