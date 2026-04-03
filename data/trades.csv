@@ -64,3 +64,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-04-03,KXHIGHTDC-26APR03-B82.5,Washington DC,high,82.0,between,no,MIDWAY,58,1,0.42,0.2505,-0.3345,-0.25,2.0,NWS,[CALIB BIAS +0¢ NO edge],d9b6154f-5e5a-4966-9927-6564feff1620,2026-04-03T17:17:36Z,,,,,,
 2026-04-03,KXHIGHTATL-26APR03-B81.5,Atlanta,high,81.0,between,no,MIDWAY,55,1,0.45,0.2475,-0.3175,0.25,2.0,NWS,[CALIB BIAS +0¢ NO edge],38dc2654-9e40-4a87-9bda-921ee54dcc39,2026-04-03T17:17:37Z,,,,,,
 2026-04-03,KXHIGHTDAL-26APR03-B84.5,Dallas,high,84.0,between,no,MIDWAY,52,1,0.48,0.2046,-0.3104,-0.75,2.0,NWS,[CALIB BIAS +0¢ NO edge],a9e1188f-39e9-4c6b-a4d5-a3b4b44cd8d7,2026-04-03T17:17:38Z,,,,,,
+2026-04-03,KXHIGHTOKC-26APR03-B80.5,Oklahoma City,high,80.0,between,no,MIDWAY,51,1,0.49,0.2407,-0.2793,-0.25,2.0,NWS,[CALIB BIAS +0¢ NO edge],b9d9649d-8585-41e8-b0bc-596c9b3637b3,2026-04-03T17:17:39Z,,,,,,
