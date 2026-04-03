@@ -17,12 +17,16 @@ Authentication works like this:
 """
 import base64
 import json
+import logging
+import random
 import time
 from typing import Optional
 import requests
 from cryptography.hazmat.primitives import serialization, hashes
 from cryptography.hazmat.primitives.asymmetric import padding
 from rich.console import Console
+
+log = logging.getLogger(__name__)
 
 from config.settings import KALSHI_API_HOST, KALSHI_API_KEY_ID, KALSHI_PRIVATE_KEY_PATH
 
@@ -82,29 +86,72 @@ class KalshiAPIClient:
             "Content-Type": "application/json",
         }
 
-    def _get(self, path: str, params: dict = None) -> dict:
-        """Make an authenticated GET request. Returns parsed JSON."""
+    _RETRY_STATUSES = (429, 500, 502, 503, 504)
+    _MAX_RETRIES    = 3
+    _BACKOFF_BASE   = 1.0   # seconds
+    _BACKOFF_MAX    = 8.0   # seconds
+
+    def _request_with_retry(self, method: str, path: str, **kwargs) -> dict:
+        """
+        Make an authenticated request with exponential backoff on transient errors.
+
+        Retries on 429 and 5xx. Does NOT retry on 4xx client errors (400/401/403).
+        Each retry re-signs the request (fresh timestamp) to avoid stale auth.
+        """
         url = self.base_url + path
-        headers = self._sign("GET", url)
-        response = self.session.get(url, headers=headers, params=params or {}, timeout=10)
-        response.raise_for_status()
-        return response.json()
+        delay = self._BACKOFF_BASE
+
+        for attempt in range(self._MAX_RETRIES + 1):
+            headers = self._sign(method, url)
+            try:
+                if method == "GET":
+                    resp = self.session.get(url, headers=headers, timeout=5, **kwargs)
+                elif method == "POST":
+                    resp = self.session.post(url, headers=headers, timeout=5, **kwargs)
+                elif method == "DELETE":
+                    resp = self.session.delete(url, headers=headers, timeout=5, **kwargs)
+                else:
+                    raise ValueError(f"Unsupported HTTP method: {method}")
+
+                if resp.status_code in self._RETRY_STATUSES and attempt < self._MAX_RETRIES:
+                    retry_after = resp.headers.get("Retry-After")
+                    wait = float(retry_after) if retry_after else delay
+                    jitter = random.uniform(0, wait * 0.3)
+                    log.warning(
+                        f"Kalshi {method} {path} → HTTP {resp.status_code}, "
+                        f"retry {attempt+1}/{self._MAX_RETRIES} in {wait:.1f}s"
+                    )
+                    time.sleep(wait + jitter)
+                    delay = min(delay * 2, self._BACKOFF_MAX)
+                    continue
+
+                resp.raise_for_status()
+                return resp.json()
+
+            except requests.exceptions.ConnectionError as exc:
+                if attempt < self._MAX_RETRIES:
+                    jitter = random.uniform(0, delay * 0.3)
+                    log.warning(f"Kalshi {method} {path} → connection error, retry {attempt+1}: {exc}")
+                    time.sleep(delay + jitter)
+                    delay = min(delay * 2, self._BACKOFF_MAX)
+                else:
+                    raise
+
+        # Exhausted retries — raise from last response
+        resp.raise_for_status()
+        return resp.json()
+
+    def _get(self, path: str, params: dict = None) -> dict:
+        """Make an authenticated GET request with retry. Returns parsed JSON."""
+        return self._request_with_retry("GET", path, params=params or {})
 
     def _post(self, path: str, body: dict = None) -> dict:
-        """Make an authenticated POST request. Returns parsed JSON."""
-        url = self.base_url + path
-        headers = self._sign("POST", url)
-        response = self.session.post(url, headers=headers, json=body or {}, timeout=10)
-        response.raise_for_status()
-        return response.json()
+        """Make an authenticated POST request with retry. Returns parsed JSON."""
+        return self._request_with_retry("POST", path, json=body or {})
 
     def _delete(self, path: str) -> dict:
-        """Make an authenticated DELETE request. Returns parsed JSON."""
-        url = self.base_url + path
-        headers = self._sign("DELETE", url)
-        response = self.session.delete(url, headers=headers, timeout=10)
-        response.raise_for_status()
-        return response.json()
+        """Make an authenticated DELETE request with retry. Returns parsed JSON."""
+        return self._request_with_retry("DELETE", path)
 
     # ── Market Discovery ────────────────────────────────────────────
 

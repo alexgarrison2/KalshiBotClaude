@@ -271,7 +271,7 @@ class BacktestEngine:
             seen_stations.add(station)
             city = cfg.get("city", series)
             try:
-                console.print(f"  {city:20s} ({station}) ...", end=" ", flush=True)
+                console.print(f"  {city:20s} ({station}) ...", end=" ")
                 obs = fetch_hourly_obs(station, days_back + 2)
                 station_obs_raw[station] = obs
                 console.print(f"[green]{len(obs)} obs[/green]")

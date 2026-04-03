@@ -332,6 +332,89 @@ Wait until you have real performance data before touching these:
 
 ---
 
+## PART 6B: COMPETITIVE RESEARCH IMPROVEMENTS (Added 2026-03-31)
+
+*Based on analysis of 4 competitor bots and weather.gov CF6 historical data. See plan file for full research notes.*
+
+### Phase 8: BRIER SCORE CALIBRATION TRACKING
+**Priority: HIGH | Effort: 1 day**
+
+Neither the live bot nor the backtester tracks how well model probabilities match actual outcomes. If the model says 70%, does it actually resolve YES ~70% of the time? Brier score answers this.
+
+**What to build:**
+- After each market settles, compute Brier score: `(model_prob - actual_outcome)^2`
+- Track cumulative Brier score, plus per-city and per-probability-bucket breakdowns
+- Log to `data/calibration_log.csv` with columns: date, ticker, city, model_prob, market_price, actual_outcome, brier_score
+- Add a reliability diagram script that plots predicted vs actual probabilities
+- This is the single most important diagnostic for knowing *where* your model is wrong
+
+---
+
+### Phase 9: CF6 HISTORICAL DATA FOR SIGMA CALIBRATION
+**Priority: HIGH | Effort: 1-2 days**
+
+Weather.gov CF6 reports provide ~4 years of daily max/min temperature data for all 20 cities (vs. current 1 year from IEM ASOS). This is Kalshi's source of record for weather data — apples-to-apples alignment.
+
+**What to build:**
+- Scraper for `forecast.weather.gov/product.php?site={SITE}&issuedby={CITY}&product=CF6&format=CI&version={1-50}`
+- Parse fixed-width format inside `<pre>` tag: extract daily MAX, MIN columns
+- Feed 4 years of data into `calibrate_sigma.py` (replace or supplement IEM ASOS)
+- More data = more robust monthly sigma estimates, especially for volatile shoulder seasons
+
+**Scope boundary:** Only use CF6 for temperature sigma calibration. Do NOT build features around precipitation, wind, snowfall, or sky cover — the model is temperature-only and there's no clear mechanism for those to improve predictions.
+
+---
+
+### Phase 10: GUMBEL DISTRIBUTION FOR HIGH CONTRACTS
+**Priority: HIGH | Effort: 2-3 days**
+
+Borrowed from the OpenClaw bot (the most sophisticated competitor analyzed). Daily temperature maxima are extreme values — the highest reading of the day. Extreme Value Theory says these follow a Gumbel distribution, not a Gaussian. The current normCDF assumption systematically misprices tail events for HIGH contracts.
+
+**What to build:**
+- Replace `norm.cdf()` with `gumbel_r.cdf()` (from scipy.stats) for HIGH series only
+- LOW series can stay normCDF (daily minima behave differently — closer to Gaussian or reverse Gumbel)
+- Calibrate Gumbel location/scale parameters from CF6 historical data (Phase 9)
+- Backtest before/after to quantify improvement
+
+---
+
+### Phase 11: DYNAMIC MINIMUM EDGE
+**Priority: MEDIUM | Effort: 0.5 day**
+
+Currently `MIN_EDGE = 0.25` regardless of uncertainty. When sigma is 5.0°F (Denver winter), you should demand more edge than when sigma is 1.5°F (Miami summer). OpenClaw uses "boundary mass" as the uncertainty signal.
+
+**What to build:**
+- `min_edge = 0.20 + 0.05 * (sigma / sigma_max)` — scales from 20¢ to 25¢ based on uncertainty
+- Or simpler: if sigma > 4.0, require MIN_EDGE = 0.30; if sigma < 2.0, allow MIN_EDGE = 0.20
+- This prevents low-conviction trades in volatile conditions
+
+---
+
+### Phase 12: SOURCE HEALTH MONITORING
+**Priority: MEDIUM | Effort: 1 day**
+
+If NWS, Open-Meteo GFS, or ECMWF starts returning stale/inconsistent data, the bot currently doesn't detect this. OpenClaw scores each source on success rate, freshness, and consistency.
+
+**What to build:**
+- Track per-source: last_success_time, consecutive_failures, data_freshness_seconds
+- If any source has >3 consecutive failures or data older than 60 min: log WARNING, reduce position size by 50%
+- If primary source (NWS) is down >30 min: pause all new orders until recovered
+- Dashboard/log output showing source health status
+
+---
+
+### Phase 13: BAYESIAN SHRINKAGE TO CLIMATOLOGY
+**Priority: LOW | Effort: 1-2 days**
+
+When forecast uncertainty is high (high sigma, morning hours), blend model probability toward historical climate base rates. OpenClaw uses: `p_final = alpha * p_model + (1-alpha) * p_climate` where alpha decreases with uncertainty.
+
+**What to build:**
+- Compute climatological probability for each market from CF6 historical data (what % of days in this month does the high exceed threshold X?)
+- Blend: `alpha = min(1.0, 2.0 / sigma)` — at sigma=2°F, alpha=1.0 (pure model); at sigma=4°F, alpha=0.5 (50/50 blend)
+- This replaces the current 15% market blend (MARKET_BLEND_WEIGHT) with a more principled prior
+
+---
+
 ## PART 7: EXPECTED IMPACT
 
 | Improvement | Est. Profit Impact | Effort | Status |
@@ -343,6 +426,12 @@ Wait until you have real performance data before touching these:
 | Soft ensemble disagreement | +20-40% more trade opportunities | Small | Phase 5 |
 | Continuous sigma decay | +5-10% edge accuracy near 11 AM | Tiny | Phase 5 |
 | Stale data detection | Avoid catastrophic bad trades | Small | Phase 6 |
+| Brier score tracking | Know where model is miscalibrated | Small | Phase 8 |
+| CF6 historical sigma (4yr) | Tighter uncertainty bands | Medium | Phase 9 |
+| Gumbel distribution (HIGH) | More accurate tail probabilities | Medium | Phase 10 |
+| Dynamic minimum edge | Avoid low-conviction volatile trades | Tiny | Phase 11 |
+| Source health monitoring | Prevent trading on stale data | Small | Phase 12 |
+| Bayesian shrinkage to climatology | Better priors when uncertain | Medium | Phase 13 |
 
 ---
 

@@ -115,6 +115,8 @@ class WeatherSignal:
     entry_mode:       str            # "PASSIVE", "MIDWAY"
     entry_cost:       float          # dollars at risk per contract
     chase_price_cents: int           # aggressive fallback price
+    z_score:          float = 0.0    # (forecast - threshold) / sigma
+    sigma_used:       float = 0.0    # sigma at evaluation time
     notes:            list = field(default_factory=list)
 
 
@@ -383,6 +385,8 @@ def evaluate_market(
         entry_mode        = entry_mode,
         entry_cost        = entry_cost,
         chase_price_cents = aggressive_limit_price(side, market.bid, market.ask),
+        z_score           = z_raw,
+        sigma_used        = effective_sigma,
         notes             = notes,
     )
 

@@ -19,25 +19,38 @@ Using a flat 3°F everywhere means we're OVERCONFIDENT in stable cities
 (and miss profitable trades) and UNDERCONFIDENT in volatile cities
 (and enter bad trades).
 
+DATA SOURCES
+─────────────
+Two sources are supported (selectable via --source flag):
+
+  1. IEM ASOS (default legacy): 365 days of hourly observations from Iowa
+     Environmental Mesonet. Daily high/low derived from hourly readings.
+
+  2. CF6 (preferred): ~4 years of official NWS Climate First-order reports
+     from weather.gov. Daily max/min directly reported — same source Kalshi
+     uses for settlement. Run `python data/fetch_cf6.py` first to download.
+
+     More data = more robust monthly sigma estimates, especially for volatile
+     shoulder seasons. CF6 also ensures apples-to-apples with Kalshi.
+
 HOW IT WORKS
 ─────────────
-1. Download 365 days of hourly temperature observations per city from
-   Iowa Environmental Mesonet (IEM) — free, no API key, reliable
-2. Compute daily high and daily low from hourly obs
-3. For each calendar month, compute the standard deviation of daily highs
+1. Load daily high/low data (from IEM ASOS or CF6)
+2. For each calendar month, compute the standard deviation of daily highs
    and lows separately
-4. Scale by 0.65 (the empirical ratio of NWS 24h forecast error to raw
+3. Scale by 0.65 (the empirical ratio of NWS 24h forecast error to raw
    temperature variability, from NWS verification statistics literature)
-5. Write a lookup table: data/sigma_lookup.json
+4. Write a lookup table: data/sigma_lookup.json
 
 The live bot reads sigma_lookup.json on startup and uses per-city,
 per-month sigma values instead of hardcoded 3.0/2.0.
 
 USAGE
 ──────
-    python data/calibrate_sigma.py
+    python data/calibrate_sigma.py                # IEM ASOS (1 year, legacy)
+    python data/calibrate_sigma.py --source cf6   # CF6 (~4 years, preferred)
 
-Re-run monthly to keep calibration fresh (takes ~2 min for all 20 cities).
+Re-run monthly to keep calibration fresh.
 
 OUTPUT
 ───────
@@ -49,6 +62,7 @@ OUTPUT
         ...
 """
 
+import argparse
 import json
 import math
 import time
@@ -72,12 +86,17 @@ FORECAST_TO_VARIABILITY_RATIO = 0.65
 MORNING_MULTIPLIER = 1.5    # morning sigma is 50% wider than afternoon
 CUTOFF_HOUR        = 11     # ET hour when we switch morning → afternoon
 SIGMA_MIN          = 1.0    # floor: never below 1°F
-SIGMA_MAX          = 8.0    # ceiling: never above 8°F
+SIGMA_MAX          = 5.0    # ceiling: never above 5°F
+                             # Published NWS 24h high-temp RMSE is 3–4°F for most US
+                             # cities.  8°F allowed effectively non-predictive sigmas
+                             # where normCDF barely moves and nearly everything looks
+                             # like edge.  5°F keeps the model discriminating.
 MIN_DAYS_PER_MONTH = 8      # require this many obs-days to trust the std dev
 DAYS_OF_HISTORY    = 365    # 1 year covers all 12 calendar months
 
-CONFIG_PATH = Path(__file__).parent / "series_config.json"
-LOOKUP_PATH = Path(__file__).parent / "sigma_lookup.json"
+CONFIG_PATH  = Path(__file__).parent / "series_config.json"
+LOOKUP_PATH  = Path(__file__).parent / "sigma_lookup.json"
+CF6_DATA_PATH = Path(__file__).parent / "cf6_daily.json"
 
 
 # ── IEM Data Fetch ─────────────────────────────────────────────────────────────
@@ -134,6 +153,29 @@ def fetch_hourly_obs(station: str, days_back: int = DAYS_OF_HISTORY) -> list[dic
             continue  # skip missing / malformed rows
 
     return obs
+
+
+# ── CF6 Data Loader ──────────────────────────────────────────────────────────
+
+def load_cf6_daily_stats(station: str) -> dict[str, dict]:
+    """
+    Load daily high/low from pre-fetched CF6 data (data/cf6_daily.json).
+    Run `python data/fetch_cf6.py` first to populate.
+
+    Returns: {"YYYY-MM-DD": {"high": float, "low": float}, ...}
+    """
+    if not CF6_DATA_PATH.exists():
+        raise FileNotFoundError(
+            f"{CF6_DATA_PATH} not found. Run `python data/fetch_cf6.py` first."
+        )
+    with open(CF6_DATA_PATH) as f:
+        all_data = json.load(f)
+
+    records = all_data.get(station, [])
+    result = {}
+    for r in records:
+        result[r["date"]] = {"high": float(r["max"]), "low": float(r["min"])}
+    return result
 
 
 # ── Daily Stats ───────────────────────────────────────────────────────────────
@@ -210,6 +252,15 @@ def compute_monthly_sigma(daily_stats: dict) -> dict[int, dict]:
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
+    parser = argparse.ArgumentParser(description="Calibrate per-city sigma values")
+    parser.add_argument(
+        "--source", choices=["iem", "cf6"], default="iem",
+        help="Data source: 'iem' (IEM ASOS, 1 year) or 'cf6' (weather.gov CF6, ~4 years)"
+    )
+    args = parser.parse_args()
+
+    use_cf6 = args.source == "cf6"
+
     with open(CONFIG_PATH) as f:
         config: dict = json.load(f)
 
@@ -220,7 +271,8 @@ def main():
     done   = 0
     failed = 0
 
-    print(f"\nCalibrating sigma for {total} weather series ({DAYS_OF_HISTORY} days of IEM data)...\n")
+    source_label = "CF6 (weather.gov)" if use_cf6 else f"IEM ASOS ({DAYS_OF_HISTORY} days)"
+    print(f"\nCalibrating sigma for {total} weather series — source: {source_label}\n")
     print(f"  Ratio: forecast error ≈ {FORECAST_TO_VARIABILITY_RATIO:.0%} of raw variability")
     print(f"  Morning: {MORNING_MULTIPLIER}× afternoon sigma (before {CUTOFF_HOUR}:00 ET)")
     print(f"  Sigma bounds: [{SIGMA_MIN}°F, {SIGMA_MAX}°F]\n")
@@ -234,16 +286,20 @@ def main():
             print(f"  {series:28s}  SKIP — no station configured")
             continue
 
-        # Download once per station even if multiple series share it
+        # Load data once per station even if multiple series share it
         if station not in station_cache:
-            print(f"  Fetching {city:20s} ({station}) ...", end=" ", flush=True)
+            print(f"  {'Loading' if use_cf6 else 'Fetching'} {city:20s} ({station}) ...", end=" ", flush=True)
             try:
-                obs     = fetch_hourly_obs(station)
-                daily   = compute_daily_stats(obs)
+                if use_cf6:
+                    daily = load_cf6_daily_stats(station)
+                else:
+                    obs   = fetch_hourly_obs(station)
+                    daily = compute_daily_stats(obs)
+                    time.sleep(0.5)   # be polite to IEM
+
                 monthly = compute_monthly_sigma(daily)
                 station_cache[station] = monthly
                 print(f"OK  ({len(daily)} days,  {len(monthly)} months)")
-                time.sleep(0.5)   # be polite to IEM
             except Exception as e:
                 print(f"FAILED — {e}")
                 station_cache[station] = {}
