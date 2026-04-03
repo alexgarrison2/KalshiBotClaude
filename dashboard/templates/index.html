@@ -114,7 +114,7 @@
   .prob-slider-pct { font-size: 11px; font-weight: 600; color: var(--text); margin-left: 2px; }
   .prob-slider-track-row { display: flex; align-items: center; gap: 6px; width: 100%; }
   .prob-slider-track { position: relative; flex: 1; height: 6px; background: #2a2f45; border-radius: 3px; }
-  .prob-slider-fill { position: absolute; left: 0; top: 0; height: 100%; border-radius: 3px; background: linear-gradient(90deg, #ef4444, #6b7280 50%, #22c55e); }
+  .prob-slider-fill { position: absolute; left: 0; top: 0; height: 100%; border-radius: 3px; }
   .prob-slider-thumb { position: absolute; top: 50%; transform: translate(-50%, -50%); width: 14px; height: 14px; border-radius: 50%; background: var(--surface); border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(255,255,255,.15); }
   .prob-slider-label { font-size: 11px; font-weight: 700; width: 18px; text-align: center; flex-shrink: 0; }
   .prob-slider-label.circled { border: 1.5px solid var(--text); border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; color: var(--text); }
@@ -172,7 +172,7 @@ function probSlider(pct, side) {
     <div class="prob-slider-track-row">
       ${nEl}
       <div class="prob-slider-track">
-        <div class="prob-slider-fill" style="width:100%"></div>
+        <div class="prob-slider-fill" style="width:100%;background:${isNo ? 'linear-gradient(90deg,#22c55e,#6b7280 50%,#ef4444)' : 'linear-gradient(90deg,#ef4444,#6b7280 50%,#22c55e)'}"></div>
         <div class="prob-slider-thumb" style="left:${thumbPct}%"></div>
       </div>
       ${yEl}
