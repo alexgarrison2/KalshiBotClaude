@@ -52,7 +52,8 @@ console = Console()
 ET = ZoneInfo("America/New_York")
 
 # ── Constants (match Taylor's trader.py exactly) ──────────────────────────────
-MIN_EDGE           = 0.25   # 25¢ minimum edge to enter (raised from 0.20)
+MIN_EDGE           = 0.25   # 25¢ minimum edge for NWS/ensemble trades (model has uncertainty)
+MIN_EDGE_METAR     = 0.07   # 7¢ minimum edge for METAR-confirmed trades (outcome already known)
 EDGE_PASSIVE       = 0.40   # ≥ 40¢ → place at mid (passive maker)
 MIN_VOLUME         = 1_000  # minimum 24-hour contracts
 SIGMA_EARLY        = 3.0    # °F — before 11 AM ET
@@ -364,7 +365,8 @@ def evaluate_market(
         effective_edge -= CALIB_BIAS_EDGE
         notes.append(f"[CALIB BIAS +{CALIB_BIAS_EDGE*100:.0f}¢ NO edge]")
 
-    if abs(effective_edge) < MIN_EDGE:
+    min_edge = MIN_EDGE_METAR if source.startswith("METAR") else MIN_EDGE
+    if abs(effective_edge) < min_edge:
         return None
 
     side = "yes" if effective_edge > 0 else "no"
