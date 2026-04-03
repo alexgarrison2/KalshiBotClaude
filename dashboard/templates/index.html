@@ -222,7 +222,7 @@ function renderToday(d) {
     <div class="stat-card">
       <div class="label">Projected P&amp;L</div>
       <div class="value ${pnlCls}">${fmt$(d.total_pnl)}</div>
-      <div class="sub">if closed now</div>
+      <div class="sub">if closed now &nbsp;·&nbsp; <span class="${pnlCls}">${d.total_cost > 0 ? (d.total_pnl / d.total_cost * 100).toFixed(1) + "% ROI" : "—"}</span></div>
     </div>
     ${d.realized_pnl !== 0 ? `<div class="stat-card">
       <div class="label">Realized Today</div>
