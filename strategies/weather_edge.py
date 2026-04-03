@@ -44,7 +44,7 @@ from rich.console import Console
 
 from strategies.base_strategy import BaseStrategy, TradeSignal, Signal
 from data.weather_data import (
-    SERIES_CONFIG, model_prob, get_calibrated_sigma,
+    SERIES_CONFIG, model_prob, norm_cdf, get_calibrated_sigma,
     fetch_all_forecasts, fetch_metar_observations, fetch_ensemble_forecasts,
 )
 
@@ -366,8 +366,12 @@ def evaluate_market(
         ecmwf_fc = day_data.get(f"ecmwf_{fc_key}")
 
         if gfs_fc is not None and ecmwf_fc is not None:
-            gfs_prob   = model_prob(gfs_fc,   market.threshold, market.strike_type, effective_sigma)
-            ecmwf_prob = model_prob(ecmwf_fc, market.threshold, market.strike_type, effective_sigma)
+            if is_between and market.cap_strike is not None:
+                gfs_prob   = max(0.0, norm_cdf((gfs_fc   - market.threshold) / effective_sigma) - norm_cdf((gfs_fc   - market.cap_strike) / effective_sigma))
+                ecmwf_prob = max(0.0, norm_cdf((ecmwf_fc - market.threshold) / effective_sigma) - norm_cdf((ecmwf_fc - market.cap_strike) / effective_sigma))
+            else:
+                gfs_prob   = model_prob(gfs_fc,   market.threshold, market.strike_type, effective_sigma)
+                ecmwf_prob = model_prob(ecmwf_fc, market.threshold, market.strike_type, effective_sigma)
 
             # Max pairwise spread across all three model probabilities
             max_spread = max(
