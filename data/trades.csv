@@ -58,3 +58,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-04-03,KXLOWTLAX-26APR03-B56.5,Los Angeles,low,56.0,between,no,PASSIVE,76,1,0.24,0.03,-0.725,-0.75,2.0,METAR↓,day_low=55.4°<56° ✗range,e0ca4ec9-ace4-483c-811f-88c9f7a193e9,2026-04-03T17:17:30Z,,,,,,
 2026-04-03,KXHIGHTLV-26APR03-B72.5,Las Vegas,high,72.0,between,no,PASSIVE,65,1,0.35,0.03,-0.62,0.25,2.0,METAR↑,day_high=75.2°>73° ✗range | [CALIB BIAS +0¢ NO edge],b5e18f0f-388a-4251-af79-6d94a7ee3b23,2026-04-03T17:17:31Z,,,,,,
 2026-04-03,KXHIGHTHOU-26APR03-B83.5,Houston,high,83.0,between,no,PASSIVE,75,1,0.25,0.2752,-0.4748,-0.25,2.0,NWS,,259200d6-a48a-448f-8252-eb6ed5fc0dcf,2026-04-03T17:17:32Z,,,,,,
+2026-04-03,KXHIGHTMIN-26APR03-B40.5,Minneapolis,high,40.0,between,no,PASSIVE,69,1,0.31,0.2662,-0.4238,-0.25,2.0,NWS,,9d94a789-5ed3-4f88-86f8-6659af89a422,2026-04-03T17:17:33Z,,,,,,
