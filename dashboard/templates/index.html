@@ -78,15 +78,29 @@
   /* ── Waterfall bar chart ── */
   .chart-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 28px; }
   .chart-title { font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 16px; }
-  .waterfall { display: flex; flex-direction: column; gap: 10px; }
-  .wf-row { display: flex; align-items: center; gap: 10px; }
-  .wf-label { width: 200px; flex-shrink: 0; font-size: 12px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .waterfall { display: flex; flex-direction: column; gap: 4px; }
+
+  /* City group row */
+  .wf-city-group { border-radius: 6px; overflow: hidden; }
+  .wf-row { display: flex; align-items: center; gap: 10px; padding: 4px 6px; border-radius: 6px; cursor: pointer; transition: background .1s; }
+  .wf-row:hover { background: var(--surface2); }
+  .wf-label { width: 160px; flex-shrink: 0; font-size: 12px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; }
+  .wf-chevron { font-size: 10px; color: var(--muted); transition: transform .2s; display: inline-block; }
+  .wf-chevron.open { transform: rotate(90deg); }
+  .wf-n-badge { font-size: 10px; color: var(--muted); background: var(--surface2); border-radius: 10px; padding: 1px 5px; flex-shrink: 0; }
   .wf-bar-track { flex: 1; height: 28px; background: var(--surface2); border-radius: 4px; position: relative; overflow: hidden; }
   .wf-bar-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 8px; font-size: 11px; font-weight: 600; white-space: nowrap; transition: width .4s ease; min-width: 2px; }
   .wf-bar-fill.pos { background: rgba(34,197,94,.25); color: var(--green); }
   .wf-bar-fill.neg { background: rgba(239,68,68,.25); color: var(--red); }
   .wf-bar-fill.neutral { background: rgba(99,102,241,.2); color: var(--purple); }
   .wf-val { width: 70px; text-align: right; font-size: 12px; font-weight: 600; flex-shrink: 0; }
+
+  /* Expanded sub-trades */
+  .wf-subtrades { display: none; padding: 2px 0 6px 20px; border-left: 2px solid var(--border); margin-left: 12px; flex-direction: column; gap: 3px; }
+  .wf-subtrades.open { display: flex; }
+  .wf-subrow { display: flex; align-items: center; gap: 10px; padding: 3px 6px; border-radius: 4px; }
+  .wf-subrow:hover { background: var(--surface2); }
+  .wf-sublabel { width: 140px; flex-shrink: 0; font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   /* ── History ── */
   .day-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 16px; overflow: hidden; }
@@ -217,25 +231,58 @@ function renderToday(d) {
     </div>` : ""}
   </div>`;
 
-  // Waterfall chart
-  const maxAbs = Math.max(...openTrades.map(t => Math.abs(t.projected_pnl || 0)), 0.01);
-  const wfRows = openTrades.map(t => {
-    const pnl = t.projected_pnl;
-    const pct = pnl != null ? Math.min(98, Math.abs(pnl) / maxAbs * 90) : 0;
-    const cls = pnl == null ? "neutral" : pnl >= 0 ? "pos" : "neg";
-    const label = pnl != null ? fmt$(pnl) : "—";
-    return `<div class="wf-row">
-      <div class="wf-label" title="${t.ticker}">${t.city} ${t.desc.includes("between") ? "range" : ""}</div>
-      <div class="wf-bar-track">
-        <div class="wf-bar-fill ${cls}" style="width:${pct}%">${label}</div>
+  // Waterfall chart — grouped by city
+  // Aggregate per city
+  const cityMap = {};
+  for (const t of openTrades) {
+    if (!cityMap[t.city]) cityMap[t.city] = { city: t.city, pnl: 0, trades: [] };
+    cityMap[t.city].pnl += (t.projected_pnl || 0);
+    cityMap[t.city].trades.push(t);
+  }
+  const cityGroups = Object.values(cityMap).sort((a, b) => b.pnl - a.pnl);
+  const maxAbs = Math.max(...cityGroups.map(g => Math.abs(g.pnl)), 0.01);
+  const subMaxAbs = Math.max(...openTrades.map(t => Math.abs(t.projected_pnl || 0)), 0.01);
+
+  const wfRows = cityGroups.map((g, gi) => {
+    const pnl = g.pnl;
+    const pct = Math.min(98, Math.abs(pnl) / maxAbs * 90);
+    const cls = pnl >= 0 ? "pos" : "neg";
+    const n   = g.trades.length;
+
+    // Sub-trade rows
+    const subRows = g.trades.map(t => {
+      const sp   = t.projected_pnl;
+      const spct = sp != null ? Math.min(98, Math.abs(sp) / subMaxAbs * 90) : 0;
+      const scls = sp == null ? "neutral" : sp >= 0 ? "pos" : "neg";
+      const desc = t.desc.replace(t.city + " ", "");  // strip city prefix
+      return `<div class="wf-subrow">
+        <div class="wf-sublabel" title="${t.ticker}">${desc}</div>
+        <div class="wf-bar-track">
+          <div class="wf-bar-fill ${scls}" style="width:${spct}%">${sp != null ? fmt$(sp) : "—"}</div>
+        </div>
+        <div class="wf-val ${scls}">${fmt$(sp)}</div>
+      </div>`;
+    }).join("");
+
+    return `<div class="wf-city-group">
+      <div class="wf-row" onclick="toggleWf(${gi})">
+        <div class="wf-label">
+          <span class="wf-chevron" id="wf-chev-${gi}">›</span>
+          ${g.city}
+          ${n > 1 ? `<span class="wf-n-badge">${n}</span>` : ""}
+        </div>
+        <div class="wf-bar-track">
+          <div class="wf-bar-fill ${cls}" style="width:${pct}%">${fmt$(pnl)}</div>
+        </div>
+        <div class="wf-val ${cls}">${fmt$(pnl)}</div>
       </div>
-      <div class="wf-val ${cls}">${fmt$(pnl)}</div>
+      <div class="wf-subtrades" id="wf-sub-${gi}">${subRows}</div>
     </div>`;
   }).join("");
 
   const chart = openTrades.length ? `
   <div class="chart-wrap">
-    <div class="chart-title">PROJECTED P&L PER TRADE</div>
+    <div class="chart-title">PROJECTED P&L BY CITY</div>
     <div class="waterfall">${wfRows}</div>
   </div>` : "";
 
@@ -351,6 +398,13 @@ function renderHistory(d) {
 function toggleDay(i) {
   const el = document.getElementById("day-" + i);
   el.classList.toggle("open");
+}
+
+function toggleWf(i) {
+  const sub  = document.getElementById("wf-sub-"  + i);
+  const chev = document.getElementById("wf-chev-" + i);
+  sub.classList.toggle("open");
+  chev.classList.toggle("open");
 }
 
 // ─── Load ─────────────────────────────────────────────────────────────────────
