@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Kalshi Weather Bot</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+    --border: #2a2f45;
+    --text: #e8eaf0;
+    --muted: #6b7280;
+    --green: #22c55e;
+    --red: #ef4444;
+    --amber: #f59e0b;
+    --blue: #3b82f6;
+    --purple: #a78bfa;
+    --accent: #6366f1;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 14px; min-height: 100vh; }
+
+  /* ── Nav ── */
+  nav { display: flex; align-items: center; gap: 8px; padding: 16px 24px; border-bottom: 1px solid var(--border); background: var(--surface); }
+  nav .logo { font-weight: 700; font-size: 16px; color: var(--text); margin-right: 16px; display: flex; align-items: center; gap: 8px; }
+  nav .logo span { font-size: 20px; }
+  nav a { padding: 6px 14px; border-radius: 6px; text-decoration: none; color: var(--muted); font-weight: 500; transition: all .15s; }
+  nav a:hover { color: var(--text); background: var(--surface2); }
+  nav a.active { color: var(--text); background: var(--surface2); }
+  .refresh-btn { margin-left: auto; padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; font-size: 13px; transition: all .15s; }
+  .refresh-btn:hover { color: var(--text); border-color: var(--accent); }
+  .refresh-time { font-size: 11px; color: var(--muted); margin-left: 8px; }
+
+  /* ── Layout ── */
+  main { max-width: 1100px; margin: 0 auto; padding: 28px 24px; }
+
+  /* ── Stat cards ── */
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 28px; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; }
+  .stat-card .label { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: 8px; }
+  .stat-card .value { font-size: 26px; font-weight: 700; line-height: 1; }
+  .stat-card .sub { font-size: 11px; color: var(--muted); margin-top: 6px; }
+  .pos { color: var(--green); }
+  .neg { color: var(--red); }
+  .neu { color: var(--text); }
+
+  /* ── Section header ── */
+  .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .section-header h2 { font-size: 15px; font-weight: 600; }
+  .badge { font-size: 11px; padding: 2px 8px; border-radius: 99px; background: var(--surface2); color: var(--muted); font-weight: 600; }
+
+  /* ── Table ── */
+  .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 28px; }
+  table { width: 100%; border-collapse: collapse; }
+  thead th { padding: 10px 14px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); border-bottom: 1px solid var(--border); font-weight: 600; white-space: nowrap; }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--surface2); }
+  tbody td { padding: 11px 14px; vertical-align: middle; }
+  .ticker-cell { font-family: monospace; font-size: 12px; color: var(--muted); }
+  .desc-cell { font-weight: 500; }
+  .side-badge { font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 4px; display: inline-block; }
+  .side-badge.yes { background: rgba(34,197,94,.15); color: var(--green); }
+  .side-badge.no  { background: rgba(239,68,68,.15);  color: var(--red); }
+  .source-badge { font-size: 11px; padding: 1px 6px; border-radius: 4px; background: var(--surface2); color: var(--muted); }
+  .source-badge.metar { background: rgba(99,102,241,.15); color: var(--purple); }
+  .pnl-bar-wrap { display: flex; align-items: center; gap: 8px; }
+  .pnl-bar { height: 4px; border-radius: 2px; min-width: 2px; max-width: 80px; }
+  .pnl-bar.pos { background: var(--green); }
+  .pnl-bar.neg { background: var(--red); }
+  .settled-row td { opacity: .55; }
+  .settled-row .result-pill { font-size: 11px; padding: 2px 7px; border-radius: 4px; font-weight: 700; }
+  .settled-row .result-pill.won { background: rgba(34,197,94,.15); color: var(--green); }
+  .settled-row .result-pill.lost { background: rgba(239,68,68,.15); color: var(--red); }
+
+  /* ── Waterfall bar chart ── */
+  .chart-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 28px; }
+  .chart-title { font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 16px; }
+  .waterfall { display: flex; flex-direction: column; gap: 10px; }
+  .wf-row { display: flex; align-items: center; gap: 10px; }
+  .wf-label { width: 200px; flex-shrink: 0; font-size: 12px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .wf-bar-track { flex: 1; height: 28px; background: var(--surface2); border-radius: 4px; position: relative; overflow: hidden; }
+  .wf-bar-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 8px; font-size: 11px; font-weight: 600; white-space: nowrap; transition: width .4s ease; min-width: 2px; }
+  .wf-bar-fill.pos { background: rgba(34,197,94,.25); color: var(--green); }
+  .wf-bar-fill.neg { background: rgba(239,68,68,.25); color: var(--red); }
+  .wf-bar-fill.neutral { background: rgba(99,102,241,.2); color: var(--purple); }
+  .wf-val { width: 70px; text-align: right; font-size: 12px; font-weight: 600; flex-shrink: 0; }
+
+  /* ── History ── */
+  .day-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 16px; overflow: hidden; }
+  .day-header { display: flex; align-items: center; gap: 14px; padding: 14px 18px; cursor: pointer; user-select: none; }
+  .day-header:hover { background: var(--surface2); }
+  .day-date { font-weight: 700; font-size: 15px; }
+  .day-stats { display: flex; gap: 18px; margin-left: auto; }
+  .day-stat { font-size: 12px; color: var(--muted); }
+  .day-stat strong { color: var(--text); }
+  .day-pnl { font-size: 16px; font-weight: 700; margin-left: 10px; }
+  .day-trades { display: none; border-top: 1px solid var(--border); }
+  .day-trades.open { display: block; }
+
+  /* ── Overall banner ── */
+  .overall-banner { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; margin-bottom: 24px; display: flex; align-items: center; gap: 24px; }
+  .overall-banner .ob-label { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+  .overall-banner .ob-val { font-size: 22px; font-weight: 700; margin-top: 2px; }
+
+  /* ── Loading / error ── */
+  .loading { padding: 40px; text-align: center; color: var(--muted); }
+  .error-msg { background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.3); border-radius: 8px; padding: 12px 16px; color: var(--red); margin-bottom: 16px; }
+
+  /* ── Probability pill ── */
+  .prob-pill { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; }
+  .prob-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo"><span>⛅</span> Kalshi Weather Bot</div>
+  <a href="/today" id="nav-today" class="{{ 'active' if active == 'today' else '' }}">Today</a>
+  <a href="/history" id="nav-history" class="{{ 'active' if active == 'history' else '' }}">History</a>
+  <button class="refresh-btn" onclick="loadData()">↺ Refresh</button>
+  <span class="refresh-time" id="refresh-time"></span>
+</nav>
+
+<main id="app">
+  <div class="loading">Loading…</div>
+</main>
+
+<script>
+const active = "{{ active }}";
+
+// ─── Utilities ────────────────────────────────────────────────────────────────
+
+const fmt$ = v => v == null ? "—" : (v >= 0 ? "+" : "") + "$" + Math.abs(v).toFixed(2);
+const fmtPct = v => v == null ? "—" : v.toFixed(1) + "%";
+const clr = v => v == null ? "neu" : v >= 0 ? "pos" : "neg";
+
+function pnlBar(pnl, maxAbs) {
+  if (pnl == null || maxAbs === 0) return "";
+  const pct = Math.min(100, Math.abs(pnl) / maxAbs * 100);
+  const cls = pnl >= 0 ? "pos" : "neg";
+  return `<div class="pnl-bar-wrap">
+    <div class="pnl-bar ${cls}" style="width:${pct}px"></div>
+    <span class="${cls}">${fmt$(pnl)}</span>
+  </div>`;
+}
+
+function probDot(pct) {
+  if (pct == null) return "";
+  const hue = pct > 50 ? 142 : 0;  // green if YES likely, red if NO likely
+  const sat = Math.abs(pct - 50) * 2;  // 0–100
+  return `<span class="prob-pill">
+    <span class="prob-dot" style="background:hsl(${hue},${sat}%,55%)"></span>
+    ${fmtPct(pct)} YES
+  </span>`;
+}
+
+// ─── Today view ──────────────────────────────────────────────────────────────
+
+function renderToday(d) {
+  const pnlCls = clr(d.total_pnl);
+  const openTrades  = d.trades.filter(t => !t.is_settled);
+  const closedToday = d.trades.filter(t => t.is_settled);
+
+  // Stat cards
+  const cards = `
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="label">Open Positions</div>
+      <div class="value neu">${d.n_open}</div>
+      <div class="sub">${d.n_closed} settled today</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Total Cost</div>
+      <div class="value neu">$${d.total_cost.toFixed(2)}</div>
+      <div class="sub">across ${d.n_open} open trades</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Market Value</div>
+      <div class="value neu">$${d.total_mv.toFixed(2)}</div>
+      <div class="sub">live Kalshi prices</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Projected P&amp;L</div>
+      <div class="value ${pnlCls}">${fmt$(d.total_pnl)}</div>
+      <div class="sub">if closed now</div>
+    </div>
+    ${d.realized_pnl !== 0 ? `<div class="stat-card">
+      <div class="label">Realized Today</div>
+      <div class="value ${clr(d.realized_pnl)}">${fmt$(d.realized_pnl)}</div>
+      <div class="sub">${d.n_closed} settled</div>
+    </div>` : ""}
+  </div>`;
+
+  // Waterfall chart
+  const maxAbs = Math.max(...openTrades.map(t => Math.abs(t.projected_pnl || 0)), 0.01);
+  const wfRows = openTrades.map(t => {
+    const pnl = t.projected_pnl;
+    const pct = pnl != null ? Math.min(98, Math.abs(pnl) / maxAbs * 90) : 0;
+    const cls = pnl == null ? "neutral" : pnl >= 0 ? "pos" : "neg";
+    const label = pnl != null ? fmt$(pnl) : "—";
+    return `<div class="wf-row">
+      <div class="wf-label" title="${t.ticker}">${t.city} ${t.desc.includes("between") ? "range" : ""}</div>
+      <div class="wf-bar-track">
+        <div class="wf-bar-fill ${cls}" style="width:${pct}%">${label}</div>
+      </div>
+      <div class="wf-val ${cls}">${fmt$(pnl)}</div>
+    </div>`;
+  }).join("");
+
+  const chart = openTrades.length ? `
+  <div class="chart-wrap">
+    <div class="chart-title">PROJECTED P&L PER TRADE</div>
+    <div class="waterfall">${wfRows}</div>
+  </div>` : "";
+
+  // Trades table
+  const maxAbsT = Math.max(...d.trades.map(t => Math.abs(t.projected_pnl || t.pnl || 0)), 0.01);
+  const tableRows = d.trades.map(t => {
+    const srcCls = (t.source || "").startsWith("METAR") ? "metar" : "";
+    const pnlVal = t.is_settled ? t.pnl : t.projected_pnl;
+    const pnlLabel = t.is_settled
+      ? `<span class="result-pill ${pnlVal >= 0 ? 'won' : 'lost'}">${pnlVal >= 0 ? '✓ WON' : '✗ LOST'}</span> ${fmt$(pnlVal)}`
+      : pnlBar(pnlVal, maxAbsT);
+    return `<tr class="${t.is_settled ? 'settled-row' : ''}">
+      <td class="desc-cell">${t.desc}</td>
+      <td><span class="side-badge ${t.side.toLowerCase()}">${t.side}</span></td>
+      <td>${t.contracts}</td>
+      <td>$${t.cost.toFixed(2)}</td>
+      <td>${t.market_value != null ? "$" + t.market_value.toFixed(2) : "—"}</td>
+      <td>${probDot(t.cur_yes_mid_pct)}</td>
+      <td>${pnlLabel}</td>
+      <td><span class="source-badge ${srcCls}">${t.source}</span></td>
+      <td class="ticker-cell">${t.ticker}</td>
+    </tr>`;
+  }).join("");
+
+  const table = `
+  <div class="section-header">
+    <h2>Trades</h2>
+    <span class="badge">${d.trades.length} total</span>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr>
+        <th>Market</th><th>Side</th><th>Qty</th><th>Cost</th>
+        <th>Mkt Value</th><th>YES Prob</th><th>P&amp;L</th><th>Source</th><th>Ticker</th>
+      </tr></thead>
+      <tbody>${tableRows || '<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:24px">No trades today</td></tr>'}</tbody>
+    </table>
+  </div>`;
+
+  document.getElementById("app").innerHTML = cards + chart + table;
+}
+
+// ─── History view ─────────────────────────────────────────────────────────────
+
+function renderHistory(d) {
+  const banner = `
+  <div class="overall-banner">
+    <div>
+      <div class="ob-label">All-Time P&L</div>
+      <div class="ob-val ${clr(d.overall_pnl)}">${fmt$(d.overall_pnl)}</div>
+    </div>
+    <div>
+      <div class="ob-label">Days Traded</div>
+      <div class="ob-val neu">${d.days.length}</div>
+    </div>
+    <div>
+      <div class="ob-label">Total Trades</div>
+      <div class="ob-val neu">${d.days.reduce((s,x) => s + x.n_trades, 0)}</div>
+    </div>
+    <div>
+      <div class="ob-label">Win Rate</div>
+      <div class="ob-val neu">${(() => {
+        const wins  = d.days.reduce((s,x) => s + x.n_wins, 0);
+        const total = d.days.reduce((s,x) => s + x.n_wins + x.n_losses, 0);
+        return total ? (wins / total * 100).toFixed(0) + "%" : "—";
+      })()}</div>
+    </div>
+  </div>`;
+
+  const days = d.days.map((day, i) => {
+    const pnlCls = clr(day.total_pnl);
+    const tradeRows = day.trades.map(t => {
+      const pnlVal = t.pnl;
+      const resultEl = t.result
+        ? `<span class="result-pill ${pnlVal >= 0 ? 'won' : 'lost'} settled-row">${pnlVal >= 0 ? '✓' : '✗'} ${t.result.toUpperCase()}</span>`
+        : `<span style="color:var(--muted)">pending</span>`;
+      return `<tr>
+        <td class="desc-cell">${t.city}</td>
+        <td><span class="side-badge ${t.side.toLowerCase()}">${t.side}</span></td>
+        <td>${t.contracts}</td>
+        <td>$${t.cost.toFixed(2)}</td>
+        <td>${resultEl}</td>
+        <td class="${clr(pnlVal)}">${fmt$(pnlVal)}</td>
+        <td class="ticker-cell">${t.ticker}</td>
+      </tr>`;
+    }).join("");
+
+    const tableHtml = `<div class="day-trades" id="day-${i}">
+      <table>
+        <thead><tr><th>City</th><th>Side</th><th>Qty</th><th>Cost</th><th>Result</th><th>P&L</th><th>Ticker</th></tr></thead>
+        <tbody>${tradeRows}</tbody>
+      </table>
+    </div>`;
+
+    return `<div class="day-card">
+      <div class="day-header" onclick="toggleDay(${i})">
+        <div class="day-date">${day.date}</div>
+        <div class="day-stats">
+          <div class="day-stat"><strong>${day.n_trades}</strong> trades</div>
+          <div class="day-stat"><strong style="color:var(--green)">${day.n_wins}W</strong> / <strong style="color:var(--red)">${day.n_losses}L</strong></div>
+          <div class="day-stat">cost $${day.total_cost.toFixed(2)}</div>
+        </div>
+        <div class="day-pnl ${pnlCls}">${fmt$(day.total_pnl)}</div>
+        <div style="color:var(--muted);margin-left:8px;font-size:18px">›</div>
+      </div>
+      ${tableHtml}
+    </div>`;
+  }).join("");
+
+  document.getElementById("app").innerHTML = banner + (days || '<div class="loading">No history yet</div>');
+}
+
+function toggleDay(i) {
+  const el = document.getElementById("day-" + i);
+  el.classList.toggle("open");
+}
+
+// ─── Load ─────────────────────────────────────────────────────────────────────
+
+async function loadData() {
+  document.getElementById("app").innerHTML = '<div class="loading">Loading…</div>';
+  const url = active === "today" ? "/api/today" : "/api/history";
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(res.statusText);
+    const data = await res.json();
+    if (active === "today") renderToday(data);
+    else renderHistory(data);
+    document.getElementById("refresh-time").textContent =
+      "Updated " + new Date().toLocaleTimeString();
+  } catch (e) {
+    document.getElementById("app").innerHTML =
+      `<div class="error-msg">Failed to load data: ${e.message}</div>`;
+  }
+}
+
+// Auto-refresh every 60s on Today view
+loadData();
+if (active === "today") setInterval(loadData, 60000);
+</script>
+</body>
+</html>
