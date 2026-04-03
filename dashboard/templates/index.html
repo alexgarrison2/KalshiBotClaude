@@ -109,9 +109,16 @@
   .loading { padding: 40px; text-align: center; color: var(--muted); }
   .error-msg { background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.3); border-radius: 8px; padding: 12px 16px; color: var(--red); margin-bottom: 16px; }
 
-  /* ── Probability pill ── */
-  .prob-pill { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; }
-  .prob-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  /* ── Probability slider ── */
+  .prob-slider-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; min-width: 120px; }
+  .prob-slider-pct { font-size: 11px; font-weight: 600; color: var(--text); margin-left: 2px; }
+  .prob-slider-track-row { display: flex; align-items: center; gap: 6px; width: 100%; }
+  .prob-slider-track { position: relative; flex: 1; height: 6px; background: #2a2f45; border-radius: 3px; }
+  .prob-slider-fill { position: absolute; left: 0; top: 0; height: 100%; border-radius: 3px; background: linear-gradient(90deg, #ef4444, #6b7280 50%, #22c55e); }
+  .prob-slider-thumb { position: absolute; top: 50%; transform: translate(-50%, -50%); width: 14px; height: 14px; border-radius: 50%; background: var(--surface); border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(255,255,255,.15); }
+  .prob-slider-label { font-size: 11px; font-weight: 700; width: 18px; text-align: center; flex-shrink: 0; }
+  .prob-slider-label.circled { border: 1.5px solid var(--text); border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; color: var(--text); }
+  .prob-slider-label.muted { color: var(--muted); }
 </style>
 </head>
 <body>
@@ -147,14 +154,30 @@ function pnlBar(pnl, maxAbs) {
   </div>`;
 }
 
-function probDot(pct) {
-  if (pct == null) return "";
-  const hue = pct > 50 ? 142 : 0;  // green if YES likely, red if NO likely
-  const sat = Math.abs(pct - 50) * 2;  // 0–100
-  return `<span class="prob-pill">
-    <span class="prob-dot" style="background:hsl(${hue},${sat}%,55%)"></span>
-    ${fmtPct(pct)} YES
-  </span>`;
+function probSlider(pct, side) {
+  // pct = YES probability 0–100, side = "YES" or "NO" (our position)
+  if (pct == null) return "—";
+  const thumbPct = Math.max(2, Math.min(98, pct));  // clamp for visual
+  const isNo  = side === "NO";
+  const isYes = side === "YES";
+  // N is circled if our trade is NO, Y is circled if our trade is YES
+  const nEl = isNo
+    ? `<span class="prob-slider-label circled">N</span>`
+    : `<span class="prob-slider-label muted">N</span>`;
+  const yEl = isYes
+    ? `<span class="prob-slider-label circled">Y</span>`
+    : `<span class="prob-slider-label muted">Y</span>`;
+  return `<div class="prob-slider-wrap">
+    <div class="prob-slider-pct">${fmtPct(pct)}</div>
+    <div class="prob-slider-track-row">
+      ${nEl}
+      <div class="prob-slider-track">
+        <div class="prob-slider-fill" style="width:100%"></div>
+        <div class="prob-slider-thumb" style="left:${thumbPct}%"></div>
+      </div>
+      ${yEl}
+    </div>
+  </div>`;
 }
 
 // ─── Today view ──────────────────────────────────────────────────────────────
@@ -230,7 +253,7 @@ function renderToday(d) {
       <td>${t.contracts}</td>
       <td>$${t.cost.toFixed(2)}</td>
       <td>${t.market_value != null ? "$" + t.market_value.toFixed(2) : "—"}</td>
-      <td>${probDot(t.cur_yes_mid_pct)}</td>
+      <td>${probSlider(t.cur_yes_mid_pct, t.side)}</td>
       <td>${pnlLabel}</td>
       <td><span class="source-badge ${srcCls}">${t.source}</span></td>
       <td class="ticker-cell">${t.ticker}</td>
