@@ -94,13 +94,14 @@ class WeatherMarket:
     ticker:      str
     city:        str
     temp_type:   str          # "high" or "low"
-    threshold:   float
-    strike_type: str          # "greater" or "less"
+    threshold:   float        # floor_strike for "greater"/"between"; cap_strike for "less"
+    strike_type: str          # "greater", "less", or "between"
     bid:         float        # YES bid price (0–1)
     ask:         float        # YES ask price (0–1)
     mid:         float        # (bid + ask) / 2
     volume:      float        # 24-hour volume
     event_date:  Optional[date]
+    cap_strike:  Optional[float] = None  # upper bound for "between" contracts
 
 
 @dataclass
@@ -151,12 +152,18 @@ def _parse_threshold(market: dict) -> float:
 def parse_open_market(series: str, m: dict) -> Optional[WeatherMarket]:
     """
     Convert a raw Kalshi market dict into a WeatherMarket.
+    Accepts threshold contracts (T-prefix, strike_type "greater"/"less") and
+    range contracts (B-prefix, strike_type "between").
     Returns None if the market fails any filter.
     """
-    ticker   = m.get("ticker", "")
-    last_seg = ticker.split("-")[-1]
+    ticker      = m.get("ticker", "")
+    last_seg    = ticker.split("-")[-1]
+    strike_type = m.get("strike_type", "greater")
 
-    if not (last_seg.startswith("T") and last_seg[1:].replace(".", "").isdigit()):
+    # Accept T-prefix threshold contracts and B-prefix between contracts
+    is_threshold = last_seg.startswith("T") and last_seg[1:].replace(".", "").isdigit()
+    is_between   = last_seg.startswith("B") and last_seg[1:].replace(".", "").isdigit() and strike_type == "between"
+    if not (is_threshold or is_between):
         return None
 
     vol = float(m.get("volume_24h_fp", 0))
@@ -181,19 +188,24 @@ def parse_open_market(series: str, m: dict) -> Optional[WeatherMarket]:
         except Exception:
             pass
 
-    cfg = SERIES_CONFIG.get(series, {})
+    cfg        = SERIES_CONFIG.get(series, {})
+    floor_s    = m.get("floor_strike")
+    cap_s      = m.get("cap_strike")
+    threshold  = float(floor_s) if floor_s is not None else _parse_threshold(m)
+
     return WeatherMarket(
         series      = series,
         ticker      = ticker,
         city        = cfg.get("city", "Unknown"),
         temp_type   = cfg.get("temp_type", "high"),
-        threshold   = _parse_threshold(m),
-        strike_type = m.get("strike_type", "greater"),
+        threshold   = threshold,
+        strike_type = strike_type,
         bid         = bid,
         ask         = ask,
         mid         = (bid + ask) / 2.0,
         volume      = vol,
         event_date  = _parse_event_date(ticker),
+        cap_strike  = float(cap_s) if cap_s is not None else None,
     )
 
 
@@ -271,48 +283,67 @@ def evaluate_market(
     if forecast is None:
         return None
 
-    # ── Layer 2: NWS normCDF base model ──────────────────────────────────────
-    # Use per-city calibrated sigma (from sigma_lookup.json) if available;
-    # fall back to the passed-in `sigma` (original hardcoded defaults).
+    # ── Layer 2: NWS base model ───────────────────────────────────────────────
     now_hour        = datetime.now(ET).hour
     effective_sigma = get_calibrated_sigma(market.series, now_hour)
 
-    # ── z-score gate: require meaningful directional conviction ───────────────
-    # When z ≈ 0, the NWS forecast sits exactly at the threshold → model_prob
-    # returns 50% regardless of sigma.  The market prices these at 2–18¢ because
-    # it incorporates seasonal context the pure normCDF model lacks.  Entering
-    # with 50% model vs 5% market is phantom edge, not real edge.
-    z_raw = (forecast - market.threshold) / effective_sigma
-    if abs(z_raw) < MIN_Z_SCORE:
-        return None  # no directional conviction — skip
+    is_between = market.strike_type == "between" and market.cap_strike is not None
 
-    prob   = model_prob(forecast, market.threshold, market.strike_type, effective_sigma)
+    if is_between:
+        # Range contract: P(floor ≤ temp ≤ cap)
+        # = normCDF((forecast - floor) / σ) − normCDF((forecast - cap) / σ)
+        # z_raw measures how far the forecast is from the CENTER of the range,
+        # normalised by sigma — gives conviction that temp lands inside vs outside.
+        range_center = (market.threshold + market.cap_strike) / 2.0
+        z_raw = (forecast - range_center) / effective_sigma
+        p_above_floor = norm_cdf((forecast - market.threshold) / effective_sigma)
+        p_above_cap   = norm_cdf((forecast - market.cap_strike)  / effective_sigma)
+        prob = max(0.0, p_above_floor - p_above_cap)
+    else:
+        # ── z-score gate: require meaningful directional conviction ───────────
+        # When z ≈ 0, the NWS forecast sits exactly at the threshold → model_prob
+        # returns 50% regardless of sigma.  The market prices these at 2–18¢ because
+        # it incorporates seasonal context the pure normCDF model lacks.  Entering
+        # with 50% model vs 5% market is phantom edge, not real edge.
+        z_raw = (forecast - market.threshold) / effective_sigma
+        if abs(z_raw) < MIN_Z_SCORE:
+            return None  # no directional conviction — skip
+        prob = model_prob(forecast, market.threshold, market.strike_type, effective_sigma)
+
     source = "NWS"
     notes  = []
 
     # ── Layer 1: METAR intraday override (same-day only) ─────────────────────
-    # Uses day_high / day_low (running daily extremes) so a threshold
-    # crossing is locked in even if the current temp drops back.
     if metar_obs and market.city in metar_obs and ed == date.today():
         city_metar = metar_obs[market.city]
         obs      = city_metar["obs_temp"]
         day_high = city_metar.get("day_high", obs)
         day_low  = city_metar.get("day_low", obs)
 
-        if market.temp_type == "high":
-            if market.strike_type == "greater" and day_high > market.threshold:
-                prob, source = METAR_CERTAIN, "METAR↑"
-                notes.append(f"day_high={day_high:.1f}°>{market.threshold:.0f}° ✓YES")
-            elif market.strike_type == "less" and day_high > market.threshold:
+        if is_between:
+            # Range confirmed NO: observed extreme already outside the range
+            extreme = day_high if market.temp_type == "high" else day_low
+            if market.temp_type == "high" and day_high > market.cap_strike:
                 prob, source = METAR_CERTAIN_NO, "METAR↑"
-                notes.append(f"day_high={day_high:.1f}°>{market.threshold:.0f}° ✓NO")
-        elif market.temp_type == "low":
-            if market.strike_type == "less" and day_low < market.threshold:
-                prob, source = METAR_CERTAIN, "METAR↓"
-                notes.append(f"day_low={day_low:.1f}°<{market.threshold:.0f}° ✓YES")
-            elif market.strike_type == "greater" and day_low < market.threshold:
+                notes.append(f"day_high={day_high:.1f}°>{market.cap_strike:.0f}° ✗range")
+            elif market.temp_type == "low" and day_low < market.threshold:
                 prob, source = METAR_CERTAIN_NO, "METAR↓"
-                notes.append(f"day_low={day_low:.1f}°<{market.threshold:.0f}° ✓NO")
+                notes.append(f"day_low={day_low:.1f}°<{market.threshold:.0f}° ✗range")
+        else:
+            if market.temp_type == "high":
+                if market.strike_type == "greater" and day_high > market.threshold:
+                    prob, source = METAR_CERTAIN, "METAR↑"
+                    notes.append(f"day_high={day_high:.1f}°>{market.threshold:.0f}° ✓YES")
+                elif market.strike_type == "less" and day_high > market.threshold:
+                    prob, source = METAR_CERTAIN_NO, "METAR↑"
+                    notes.append(f"day_high={day_high:.1f}°>{market.threshold:.0f}° ✓NO")
+            elif market.temp_type == "low":
+                if market.strike_type == "less" and day_low < market.threshold:
+                    prob, source = METAR_CERTAIN, "METAR↓"
+                    notes.append(f"day_low={day_low:.1f}°<{market.threshold:.0f}° ✓YES")
+                elif market.strike_type == "greater" and day_low < market.threshold:
+                    prob, source = METAR_CERTAIN_NO, "METAR↓"
+                    notes.append(f"day_low={day_low:.1f}°<{market.threshold:.0f}° ✓NO")
 
     # ── Bayesian market blend ─────────────────────────────────────────────────
     # Lightly pull model_prob toward the market's implied probability.
