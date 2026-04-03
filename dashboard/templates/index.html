@@ -235,7 +235,7 @@ function renderToday(d) {
         <div class="label">Projected P&amp;L</div>
         <div class="value ${pnlCls}">${fmt$(d.total_pnl)}</div>
         <div class="sub">if closed now &nbsp;·&nbsp; <span class="${pnlCls}">${d.total_cost > 0 ? (d.total_pnl / d.total_cost * 100).toFixed(1) + "% ROI" : "—"}</span></div>
-        <div class="sub" style="margin-top:4px">if settled now &nbsp;·&nbsp; <span class="${bCls}">${binaryRoi !== null ? binaryRoi + "% ROI" : "—"}</span></div>
+        <div class="sub" style="margin-top:4px">if settled now &nbsp;·&nbsp; <span class="${bCls}">${fmt$(binaryPnl)} &nbsp;·&nbsp; ${binaryRoi !== null ? binaryRoi + "% ROI" : "—"}</span></div>
       </div>`;
     })()}
     ${d.realized_pnl !== 0 ? `<div class="stat-card">
