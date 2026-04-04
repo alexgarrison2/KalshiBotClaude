@@ -1,2 +1,3 @@
 date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,contracts,entry_cost,model_prob,effective_edge,source,notes,order_id,placed_at,fee,result,pnl
 2026-04-03,KXHIGHTBOS-26APR04-T58,Boston,high,58.0,less,yes,PASSIVE,28,1,0.28,0.7564,0.4814,-1.0,2.0,NWS,,2d4c341c-3d4e-4200-913c-c1e6801b925d,2026-04-04T02:14:19Z,,,,,,
+2026-04-03,KXLOWTCHI-26APR03-B39.5,Chicago,low,39.0,between,no,MIDWAY,43,1,0.57,0.2452,-0.3048,0.25,2.0,NWS,[CALIB BIAS +0¢ NO edge],acb2d9e2-7ff3-4e39-93f1-e93b1e2cd2fb,2026-04-04T02:14:21Z,,,,,,
