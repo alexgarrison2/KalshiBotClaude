@@ -10,3 +10,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-04-05,KXLOWTNYC-26APR05-B42.5,New York City,low,42.0,between,no,PASSIVE,86,1,0.14,0.2663,-0.5937,-0.2083,2.4,NWS,,2169180c-cce5-4691-8f48-cf3ff84ffb25,2026-04-05T13:26:52Z,,,,,,
 2026-04-05,KXLOWTLAX-26APR05-B58.5,Los Angeles,low,58.0,between,no,PASSIVE,56,1,0.44,0.03,-0.53,-0.2083,2.4,METAR↓,day_low=57.2°<58° ✗range | [CALIB BIAS +0¢ NO edge],4b03f63e-3c29-43ce-b23d-111b10410144,2026-04-05T13:26:54Z,,,,,,
 2026-04-05,KXLOWTAUS-26APR05-T54,Austin,low,54.0,greater,no,PASSIVE,82,1,0.18,0.2957,-0.5293,-0.8333,2.4,NWS,,2b2211e1-67e4-428c-9221-659b783f341b,2026-04-05T13:26:55Z,,,,,,
+2026-04-05,KXHIGHTDC-26APR05-B73.5,Washington DC,high,73.0,between,no,PASSIVE,51,1,0.49,0.03,-0.48,-0.2083,2.4,METAR↑,day_high=75.2°>74° ✗range | [CALIB BIAS +0¢ NO edge],3d1138dc-641d-4b19-89c9-d037ff678cb7,2026-04-05T13:26:55Z,,,,,,
