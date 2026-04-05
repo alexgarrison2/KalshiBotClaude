@@ -1,3 +1,4 @@
-date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,contracts,entry_cost,model_prob,effective_edge,source,notes,order_id,placed_at,fee,result,pnl
-2026-04-04,KXLOWTAUS-26APR04-B57.5,Austin,low,57.0,between,no,PASSIVE,52,1,0.48,0.1154,-0.4046,-1.75,2.0,NWS,[CALIB BIAS +0¢ NO edge],d886a1a3-784f-4c00-ae21-098604f0da19,2026-04-05T02:19:33Z,,,,,,
-2026-04-04,KXHIGHTDAL-26APR05-B70.5,Dallas,high,70.0,between,no,MIDWAY,41,1,0.59,0.0997,-0.3153,-1.75,2.0,NWS,[CALIB BIAS +0¢ NO edge],7b6d9a26-b277-4fc5-9d7b-b1ad74757dc5,2026-04-05T02:21:06Z,,,,,,
+date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,contracts,entry_cost,model_prob,effective_edge,z_score,sigma_used,source,notes,order_id,placed_at,fill_price_cents,fill_time,fee,result,pnl,brier_score
+2026-04-04,KXLOWTAUS-26APR04-B57.5,Austin,low,57.0,between,no,PASSIVE,52,1,0.48,0.1154,-0.4046,,,-1.75,2.0,NWS,[CALIB BIAS +0¢ NO edge],,2026-04-05T02:59:25Z,d886a1a3-784f-4c00-ae21-098604f0da19,2026-04-05T02:19:33Z,,
+2026-04-04,KXHIGHTDAL-26APR05-B70.5,Dallas,high,70.0,between,no,MIDWAY,41,1,0.59,0.0997,-0.3153,,,-1.75,2.0,NWS,[CALIB BIAS +0¢ NO edge],,2026-04-05T02:23:10Z,7b6d9a26-b277-4fc5-9d7b-b1ad74757dc5,2026-04-05T02:21:06Z,,
+2026-04-04,KXHIGHTSEA-26APR05-B65.5,Seattle,high,65.0,between,no,MIDWAY,46,1,0.54,0.1478,-0.3172,-1.25,2.0,NWS,[CALIB BIAS +0¢ NO edge],32781159-3962-4e73-8ba5-65ab660aa7b3,2026-04-05T03:07:42Z,,,,,,
