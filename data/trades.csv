@@ -7,3 +7,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-04-05,KXHIGHTATL-26APR05-B69.5,Atlanta,high,69.0,between,no,PASSIVE,79,1,0.21,0.03,-0.76,0.625,2.4,METAR↑,day_high=75.2°>70° ✗range,fee8f630-3e4e-48c8-b32e-2b666cb15396,2026-04-05T13:26:48Z,,,,,,
 2026-04-05,KXLOWTDEN-26APR05-B31.5,Denver,low,31.0,between,no,PASSIVE,82,1,0.18,0.1471,-0.6679,1.875,2.4,NWS,,21a8d8eb-aef8-480f-b61b-ddb7df1fdadf,2026-04-05T13:26:49Z,,,,,,
 2026-04-05,KXHIGHTNOLA-26APR05-B72.5,New Orleans,high,72.0,between,no,PASSIVE,65,1,0.35,0.03,-0.62,0.2083,2.4,METAR↑,day_high=75.2°>73° ✗range | [CALIB BIAS +0¢ NO edge],37a7509e-7609-4f95-ae7c-f57629378956,2026-04-05T13:26:51Z,,,,,,
+2026-04-05,KXLOWTNYC-26APR05-B42.5,New York City,low,42.0,between,no,PASSIVE,86,1,0.14,0.2663,-0.5937,-0.2083,2.4,NWS,,2169180c-cce5-4691-8f48-cf3ff84ffb25,2026-04-05T13:26:52Z,,,,,,
