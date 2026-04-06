@@ -26,8 +26,8 @@ CSV_FILE    = "data/trades.csv"
 CSV_HEADERS = [
     "date", "ticker", "city", "temp_type", "threshold", "strike_type",
     "side", "entry_mode", "price_cents", "contracts", "entry_cost",
-    "model_prob", "effective_edge", "source", "notes",
-    "order_id", "placed_at", "fee", "result", "pnl",
+    "model_prob", "effective_edge", "z_score", "sigma_used", "source", "notes",
+    "order_id", "placed_at", "fill_price_cents", "fill_time", "fee", "result", "pnl", "brier_score",
 ]
 
 console = Console()
@@ -148,7 +148,7 @@ def main():
 
     # Write updated CSV back
     with open(CSV_FILE, "w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=CSV_HEADERS)
+        writer = csv.DictWriter(f, fieldnames=CSV_HEADERS, extrasaction="ignore")
         writer.writeheader()
         writer.writerows(rows)
 
