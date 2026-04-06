@@ -107,6 +107,10 @@ def main():
         source    = row["source"]
 
         result = row.get("result", "")
+        # Guard against column-shift bug: result field may contain a timestamp instead of yes/no
+        if result not in ("yes", "no"):
+            result = ""
+            row["result"] = ""
         pnl    = float(row["pnl"]) if row.get("pnl") else None
 
         if not result:

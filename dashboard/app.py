@@ -12,9 +12,27 @@ import csv
 import os
 import sys
 from datetime import date, datetime, timezone
+from typing import Optional
 from pathlib import Path
 
 from flask import Flask, jsonify, render_template
+
+_MONTH_MAP = {m: i+1 for i, m in enumerate(
+    ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"]
+)}
+
+def _event_date_from_ticker(ticker: str) -> Optional[date]:
+    """Parse event date from ticker like KXHIGHTDAL-26APR06-B72.5 → 2026-04-06."""
+    for seg in ticker.split("-"):
+        if len(seg) == 7 and seg[:2].isdigit() and seg[5:7].isdigit():
+            try:
+                yy, mon, dd = seg[:2], seg[2:5].upper(), seg[5:7]
+                m = _MONTH_MAP.get(mon)
+                if m:
+                    return date(2000 + int(yy), m, int(dd))
+            except (ValueError, KeyError):
+                pass
+    return None
 
 # ── Path setup so we can import the bot's own modules ────────────────────────
 ROOT = Path(__file__).parent.parent
@@ -75,9 +93,22 @@ def _market_value_and_prob(side: str, bid: float | None, ask: float | None) -> t
 
 @app.route("/api/today")
 def api_today():
-    today_str = date.today().isoformat()
+    today = date.today()
+    today_str = today.isoformat()
     all_trades = _load_trades()
-    today_trades = [t for t in all_trades if t.get("date") == today_str]
+
+    # "Today" = any unsettled trade whose event date is today or earlier
+    # (covers trades placed yesterday for today's markets)
+    def _is_today_trade(t):
+        result = t.get("result", "").strip()
+        if result in ("yes", "no"):
+            return False  # settled → belongs in history
+        ev = _event_date_from_ticker(t.get("ticker", ""))
+        if ev is None:
+            ev = date.fromisoformat(t.get("date", today_str))
+        return ev <= today
+
+    today_trades = [t for t in all_trades if _is_today_trade(t)]
 
     client = KalshiClient()
     live_trades = []
@@ -96,8 +127,10 @@ def api_today():
         threshold = t.get("threshold", "")
         strike_type = t.get("strike_type", "")
 
-        # Settled trades have result filled in
+        # Settled trades have result "yes" or "no" — guard against column-shift timestamps
         result   = t.get("result", "").strip()
+        if result not in ("yes", "no"):
+            result = ""
         pnl      = t.get("pnl", "").strip()
         is_settled = result in ("yes", "no")
 
@@ -161,17 +194,22 @@ def api_today():
 
 @app.route("/api/history")
 def api_history():
-    today_str = date.today().isoformat()
+    today = date.today()
     all_trades = _load_trades()
-    past = [t for t in all_trades if t.get("date", "") < today_str]
 
-    # Group by date
+    # History = only settled trades, grouped by event date
     by_date: dict[str, dict] = {}
-    for t in past:
-        d     = t["date"]
+    for t in all_trades:
+        result = t.get("result", "").strip()
+        if result not in ("yes", "no"):
+            continue  # unsettled → belongs in Today, not History
+
         pnl   = t.get("pnl", "").strip()
         cost  = float(t.get("entry_cost") or 0)
-        result = t.get("result", "").strip()
+
+        # Group by event date (from ticker), fall back to placement date
+        ev = _event_date_from_ticker(t.get("ticker", ""))
+        d  = ev.isoformat() if ev else t.get("date", "")
 
         if d not in by_date:
             by_date[d] = {"date": d, "trades": [], "total_pnl": 0.0, "n_trades": 0, "n_wins": 0, "n_losses": 0, "total_cost": 0.0}
