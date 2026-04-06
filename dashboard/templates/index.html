@@ -364,6 +364,13 @@ function renderHistory(d) {
         return total ? (wins / total * 100).toFixed(0) + "%" : "—";
       })()}</div>
     </div>
+    <div>
+      <div class="ob-label">All-Time ROI</div>
+      <div class="ob-val ${clr(d.overall_pnl)}">${(() => {
+        const totalCost = d.days.reduce((s,x) => s + x.total_cost, 0);
+        return totalCost > 0 ? (d.overall_pnl / totalCost * 100).toFixed(1) + "%" : "—";
+      })()}</div>
+    </div>
   </div>`;
 
   const days = d.days.map((day, i) => {
@@ -400,6 +407,7 @@ function renderHistory(d) {
           <div class="day-stat">cost $${day.total_cost.toFixed(2)}</div>
         </div>
         <div class="day-pnl ${pnlCls}">${fmt$(day.total_pnl)}</div>
+        ${day.total_cost > 0 ? `<div class="day-stat" style="margin-left:4px"><span class="${pnlCls}">${(day.total_pnl / day.total_cost * 100).toFixed(1)}%</span></div>` : ""}
         <div style="color:var(--muted);margin-left:8px;font-size:18px">›</div>
       </div>
       ${tableHtml}
