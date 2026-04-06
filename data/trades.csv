@@ -13,3 +13,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-04-06,KXHIGHTSFO-26APR06-B62.5,San Francisco,high,62.0,between,no,MIDWAY,21,1,0.79,0.03,-0.185,0.5,3.0,METAR↑,day_high=77.0°>63° ✗range,fb04dad5-cd3d-4390-86f2-899a0ecc0467,2026-04-06T05:01:05Z,,2026-04-06T05:01:37Z,,,,
 2026-04-06,KXHIGHTATL-26APR06-B69.5,Atlanta,high,69.0,between,no,MIDWAY,43,1,0.57,0.1747,-0.2503,0.1667,3.0,NWS,[CALIB BIAS +0¢ NO edge],d8f59002-44ab-4a50-b147-6f3176be3ebd,2026-04-06T05:58:45Z,,2026-04-06T06:04:49Z,,,,
 2026-04-06,KXHIGHTHOU-26APR06-B73.5,Houston,high,73.0,between,no,MIDWAY,42,1,0.58,0.1617,-0.2533,0.5,3.0,NWS,[CALIB BIAS +0¢ NO edge],22d6f84b-eeeb-43fb-adcd-3f3752fbeb03,2026-04-06T06:04:49Z,,,,,,
+2026-04-06,KXHIGHTPHX-26APR06-T93,Phoenix,high,93.0,greater,yes,PASSIVE,2,1,0.02,0.97,0.955,-2.3333,3.0,METAR↑,day_high=95.0°>93° ✓YES,722f35a1-ac95-40ca-b00b-a717b3a9e8b1,2026-04-06T06:42:20Z,,,,,,
