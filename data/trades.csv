@@ -219,3 +219,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-04-07,KXHIGHTSEA-26APR07-B57.5,Seattle,high,57.0,between,no,PASSIVE,55,1,0.45,0.03,-0.515,-1.25,2.0,METAR↑,day_high=73.4°>58° ✗range | [CALIB BIAS +0¢ NO edge],c7633a4d-3f9c-4206-bc58-80930ee858eb,2026-04-07T18:39:30Z,,2026-04-07T18:44:46Z,,,,
 2026-04-07,KXHIGHTSFO-26APR07-B64.5,San Francisco,high,64.0,between,no,MIDWAY,56,1,0.44,0.246,-0.309,-0.25,2.0,NWS,[CALIB BIAS +0¢ NO edge],fc0780a6-bb58-428e-ab47-f2dd3623b534,2026-04-07T19:53:59Z,,,,,,
 2026-04-07,KXHIGHTSEA-26APR07-B55.5,Seattle,high,55.0,between,no,MIDWAY,42,1,0.58,0.03,-0.395,0.25,2.0,METAR↑,day_high=73.4°>56° ✗range | [CALIB BIAS +0¢ NO edge],8f166217-ad25-4cc2-b05f-843dd281201a,2026-04-07T19:59:43Z,,,,,,
+2026-04-07,KXHIGHTSFO-26APR07-B62.5,San Francisco,high,62.0,between,no,MIDWAY,44,1,0.56,0.1949,-0.2551,0.75,2.0,NWS,[CALIB BIAS +0¢ NO edge],5ff6735c-0604-433e-bcf9-186f4f0736aa,2026-04-07T19:59:44Z,,,,,,
