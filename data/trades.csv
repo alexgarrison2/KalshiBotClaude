@@ -198,3 +198,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-04-07,KXHIGHTMIN-26APR07-T48,Minneapolis,high,48.0,greater,yes,PASSIVE,8,1,0.08,0.97,0.885,-1.0,3.0,METAR↑,day_high=50.0°>48° ✓YES,d9c26f0c-c1cd-4844-9775-3ef0b4c0a8cc,2026-04-07T08:55:31Z,,,,,,
 2026-04-07,KXHIGHTDC-26APR07-T59,Washington DC,high,59.0,greater,yes,PASSIVE,15,1,0.15,0.97,0.825,-2.0,3.0,METAR↑,day_high=63.0°>59° ✓YES,6bb2b8b4-8cdb-4a1c-8b70-b884146f1551,2026-04-07T08:55:32Z,,,,,,
 2026-04-07,KXLOWTCHI-26APR07-B29.5,Chicago,low,29.0,between,no,MIDWAY,50,1,0.5,0.1555,-0.3495,0.8333,3.0,NWS,[CALIB BIAS +0¢ NO edge],ffd470f8-c77e-43d8-9fae-12163cf41383,2026-04-07T08:55:33Z,,,,,,
+2026-04-07,KXHIGHTLV-26APR07-B88.5,Las Vegas,high,88.0,between,no,MIDWAY,49,1,0.51,0.1845,-0.3055,-0.1667,3.0,NWS,[CALIB BIAS +0¢ NO edge],0ce16480-ed3f-4a0a-a974-0831888ca893,2026-04-07T09:11:30Z,,,,,,
