@@ -239,3 +239,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-04-08,KXHIGHTBOS-26APR08-B38.5,Boston,high,38.0,between,no,MIDWAY,17,1,0.83,0.03,-0.135,0.6818,2.2,METAR↑,day_high=39.2°>39° ✗range,72b49939-5815-490a-86e4-b20bbaf76fb6,2026-04-08T14:31:44Z,,2026-04-08T15:58:09Z,,,,
 2026-04-08,KXHIGHTMIN-26APR08-B61.5,Minneapolis,high,61.0,between,no,PASSIVE,96,1,0.04,0.306,-0.649,0.25,2.0,NWS,,ac70781e-91df-435d-9974-9fdd539a3110,2026-04-08T17:41:40Z,,,,,,
 2026-04-08,KXHIGHTPHX-26APR08-B94.5,Phoenix,high,94.0,between,no,PASSIVE,70,1,0.3,0.267,-0.428,-0.25,2.0,NWS,,fb40fc0c-aa89-4e40-a7a1-155aff0b6b42,2026-04-08T17:41:41Z,,,,,,
+2026-04-08,KXHIGHTNOLA-26APR08-B77.5,New Orleans,high,77.0,between,no,PASSIVE,69,1,0.31,0.2662,-0.4238,-0.25,2.0,NWS,,77feecbd-55d0-435b-ad73-d46241e5d348,2026-04-08T17:41:42Z,,,,,,
