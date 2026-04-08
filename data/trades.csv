@@ -241,3 +241,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-04-08,KXHIGHTPHX-26APR08-B94.5,Phoenix,high,94.0,between,no,PASSIVE,70,1,0.3,0.267,-0.428,-0.25,2.0,NWS,,fb40fc0c-aa89-4e40-a7a1-155aff0b6b42,2026-04-08T17:41:41Z,,,,,,
 2026-04-08,KXHIGHTNOLA-26APR08-B77.5,New Orleans,high,77.0,between,no,PASSIVE,69,1,0.31,0.2662,-0.4238,-0.25,2.0,NWS,,77feecbd-55d0-435b-ad73-d46241e5d348,2026-04-08T17:41:42Z,,,,,,
 2026-04-08,KXLOWTLAX-26APR08-B56.5,Los Angeles,low,56.0,between,no,PASSIVE,64,1,0.36,0.2234,-0.4166,0.75,2.0,NWS,[CALIB BIAS +0¢ NO edge],4ffee910-81da-404a-bf9f-de9c8e55b629,2026-04-08T17:41:43Z,,,,,,
+2026-04-08,KXHIGHTBOS-26APR08-B40.5,Boston,high,40.0,between,no,MIDWAY,52,1,0.48,0.24,-0.275,-0.25,2.0,NWS,[CALIB BIAS +0¢ NO edge],4af52651-87cd-4c10-9531-8160c66fb98b,2026-04-08T17:41:44Z,,,,,,
