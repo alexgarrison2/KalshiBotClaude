@@ -271,3 +271,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-04-09,KXLOWTDEN-26APR09-B38.5,Denver,low,38.0,between,no,PASSIVE,81,1,0.19,0.2431,-0.5669,0.6818,2.2,NWS,,d9b48e49-bbd8-4c46-8c9d-1d7b85587ded,2026-04-09T14:10:34Z,,2026-04-09T14:13:50Z,,,,
 2026-04-09,KXHIGHTSFO-26APR09-B65.5,San Francisco,high,65.0,between,no,MIDWAY,10,1,0.9,0.03,-0.075,0.6818,2.2,METAR↑,day_high=66.2°>66° ✗range,2a1d1a38-e194-4712-803b-b64c04ff2e3d,2026-04-09T14:15:24Z,,2026-04-09T14:15:56Z,,,,
 2026-04-09,KXHIGHTLV-26APR09-B88.5,Las Vegas,high,88.0,between,no,PASSIVE,44,1,0.56,0.03,-0.405,-0.6818,2.2,METAR↑,day_high=91.4°>89° ✗range | [CALIB BIAS +0¢ NO edge],86c30664-f25d-4fac-aae0-fe4c4d52d79f,2026-04-09T14:47:19Z,,,,,,
+2026-04-09,KXHIGHTLV-26APR09-B86.5,Las Vegas,high,86.0,between,no,PASSIVE,44,1,0.56,0.03,-0.405,0.2273,2.2,METAR↑,day_high=91.4°>87° ✗range | [CALIB BIAS +0¢ NO edge],b1eab56d-43f9-412e-8ada-a3fb6fae01d1,2026-04-09T14:48:21Z,,,,,,
