@@ -298,3 +298,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-04-10,KXHIGHTHOU-26APR10-B79.5,Houston,high,79.0,between,no,MIDWAY,45,1,0.55,0.1853,-0.2597,0.1786,2.8,NWS,[CALIB BIAS +0¢ NO edge],d56c1599-0859-4d7b-a62f-cc8dc217afb2,2026-04-10T11:14:11Z,,2026-04-10T11:41:16Z,,,,
 2026-04-10,KXLOWTAUS-26APR10-B61.5,Austin,low,61.0,between,no,PASSIVE,71,1,0.29,0.03,-0.68,2.2917,2.4,METAR↓,day_low=60.8°<61° ✗range,6f627975-45c5-49f6-b5d7-e698d5ca1810,2026-04-10T13:34:19Z,,,,,,
 2026-04-10,KXHIGHTDAL-26APR10-B82.5,Dallas,high,82.0,between,no,MIDWAY,53,1,0.47,0.1617,-0.3683,-1.0417,2.4,NWS,[CALIB BIAS +0¢ NO edge],079019a1-41c2-499d-bb45-feb05ca3bf46,2026-04-10T13:34:20Z,,,,,,
+2026-04-10,KXHIGHTSFO-26APR10-B66.5,San Francisco,high,66.0,between,no,MIDWAY,36,1,0.64,0.03,-0.335,-1.4583,2.4,METAR↑,day_high=68.0°>67° ✗range | [CALIB BIAS +0¢ NO edge],1cf868f1-47b0-4685-b047-ff030172940a,2026-04-10T13:34:21Z,,,,,,
