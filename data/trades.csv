@@ -327,3 +327,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-04-11,KXHIGHTSEA-26APR11-B55.5,Seattle,high,55.0,between,no,MIDWAY,42,1,0.58,0.03,-0.395,-0.1667,3.0,METAR↑,day_high=68.0°>56° ✗range | [CALIB BIAS +0¢ NO edge],ee4ed258-e474-4424-b594-5080c629263c,2026-04-11T05:00:42Z,,,,,,
 2026-04-11,KXHIGHTOKC-26APR11-B78.5,Oklahoma City,high,78.0,between,no,MIDWAY,36,1,0.64,0.03,-0.335,-0.1667,3.0,METAR↑,day_high=82.4°>79° ✗range | [CALIB BIAS +0¢ NO edge],f5767192-6c8d-4140-91a4-0c0479755fa6,2026-04-11T05:00:43Z,,,,,,
 2026-04-11,KXHIGHTBOS-26APR11-B59.5,Boston,high,59.0,between,no,MIDWAY,33,1,0.67,0.03,-0.33,-0.1667,3.0,METAR↑,day_high=69.8°>60° ✗range | [CALIB BIAS +0¢ NO edge],130809e3-51ca-49b9-8de3-46b51255a846,2026-04-11T05:00:44Z,,,,,,
+2026-04-11,KXHIGHTATL-26APR11-B84.5,Atlanta,high,84.0,between,no,MIDWAY,50,1,0.5,0.186,-0.314,0.1667,3.0,NWS,[CALIB BIAS +0¢ NO edge],9b7e838c-36e7-45e0-b6f5-5f469cddec1d,2026-04-11T05:00:46Z,,,,,,
