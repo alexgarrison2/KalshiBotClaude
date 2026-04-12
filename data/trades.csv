@@ -383,3 +383,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-04-12,KXHIGHTMIN-26APR12-B84.5,Minneapolis,high,84.0,between,no,MIDWAY,34,1,0.66,0.1411,-0.2789,-1.25,2.0,NWS,[CALIB BIAS +0¢ NO edge],c8d1177a-b087-4d9c-afce-93d957d19f94,2026-04-12T18:26:03Z,,2026-04-12T18:28:25Z,,,,
 2026-04-12,KXHIGHTMIN-26APR12-B82.5,Minneapolis,high,82.0,between,no,MIDWAY,51,1,0.49,0.2407,-0.2793,-0.25,2.0,NWS,[CALIB BIAS +0¢ NO edge],d0a0e30b-6c7d-4b05-85c6-62635ddfb8fc,2026-04-12T18:37:29Z,,2026-04-12T18:38:34Z,,,,
 2026-04-12,KXHIGHTDAL-26APR12-T75,Dallas,high,75.0,less,no,MIDWAY,24,1,0.76,0.03,-0.215,1.0,2.0,METAR↑,day_high=78.8°>75° ✓NO,68733a44-8173-4e37-a445-65b8d3edf30c,2026-04-12T19:28:57Z,,,,,,
+2026-04-12,KXHIGHTDAL-26APR12-B75.5,Dallas,high,75.0,between,no,MIDWAY,22,1,0.78,0.03,-0.195,0.75,2.0,METAR↑,day_high=78.8°>76° ✗range,2419a5b0-b73d-483a-8e11-00aaee489ae5,2026-04-12T19:30:00Z,,,,,,
