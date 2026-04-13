@@ -407,3 +407,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-04-13,KXHIGHTNOLA-26APR13-B83.5,New Orleans,high,83.0,between,no,MIDWAY,56,1,0.44,0.2018,-0.3532,-0.1786,2.8,NWS,[CALIB BIAS +0¢ NO edge],ef56a3d2-7f96-4dfa-9d80-63e933e5b784,2026-04-13T11:31:05Z,,,,,,
 2026-04-13,KXHIGHTMIN-26APR13-B72.5,Minneapolis,high,72.0,between,no,MIDWAY,34,1,0.66,0.03,-0.33,0.1786,2.8,METAR↑,day_high=75.2°>73° ✗range | [CALIB BIAS +0¢ NO edge],c58b7935-dcd8-461d-85cc-9fa77f6e5313,2026-04-13T11:31:06Z,,,,,,
 2026-04-13,KXHIGHTSATX-26APR13-T88,San Antonio,high,88.0,greater,no,MIDWAY,35,1,0.65,0.084,-0.266,-1.7857,2.8,NWS,[CALIB BIAS +0¢ NO edge],b18ebbb2-e502-42e5-9689-96779a49d572,2026-04-13T11:31:07Z,,,,,,
+2026-04-13,KXHIGHTOKC-26APR13-B87.5,Oklahoma City,high,87.0,between,no,MIDWAY,36,1,0.64,0.1096,-0.2504,-1.25,2.8,NWS,[CALIB BIAS +0¢ NO edge],db37f413-2a4e-4346-8f22-d076af060605,2026-04-13T11:31:08Z,,,,,,
