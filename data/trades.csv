@@ -472,3 +472,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-04-15,KXHIGHTDAL-26APR15-B76.5,Dallas,high,76.0,between,no,MIDWAY,10,1,0.9,0.03,-0.075,1.1667,3.0,METAR↑,day_high=78.8°>77° ✗range,72a7d0ae-b23e-4ca7-8491-09f9de8ebee8,2026-04-15T07:45:09Z,,,,,,
 2026-04-15,KXLOWTPHIL-26APR15-B62.5,Philadelphia,low,62.0,between,no,PASSIVE,78,1,0.22,0.1975,-0.5875,0.8333,3.0,NWS,,02936ceb-5769-40c7-bab5-975319fe6c02,2026-04-15T10:20:52Z,,,,,,
 2026-04-15,KXLOWTLAX-26APR15-B54.5,Los Angeles,low,54.0,between,no,MIDWAY,56,1,0.44,0.1834,-0.3766,0.5,3.0,NWS,[CALIB BIAS +0¢ NO edge],f0092b40-6b22-4770-ae52-597a09cef1c3,2026-04-15T10:20:53Z,,,,,,
+2026-04-15,KXLOWTNYC-26APR15-B67.5,New York City,low,67.0,between,no,MIDWAY,34,1,0.66,0.1912,-0.3438,-0.1667,3.0,NWS,[CALIB BIAS +0¢ NO edge],c140d45f-b95d-48be-8aa6-fd4aa4c29de9,2026-04-15T10:20:54Z,,,,,,
