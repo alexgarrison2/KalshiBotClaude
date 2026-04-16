@@ -510,3 +510,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-04-16,KXHIGHTLV-26APR16-B80.5,Las Vegas,high,80.0,between,no,MIDWAY,36,1,0.64,0.03,-0.325,0.2273,2.2,METAR↑,day_high=82.4°>81° ✗range | [CALIB BIAS +0¢ NO edge],54de1351-6f86-47b0-9e4a-fe40b2b3db50,2026-04-16T14:07:11Z,,,,,,
 2026-04-16,KXLOWTAUS-26APR16-B65.5,Austin,low,65.0,between,no,PASSIVE,98,1,0.02,0.1903,-0.7847,1.5909,2.2,NWS,,0fd19fad-19ef-4f63-804e-f46abc12111b,2026-04-16T14:11:07Z,,,,,,
 2026-04-16,KXHIGHTOKC-26APR16-B88.5,Oklahoma City,high,88.0,between,no,MIDWAY,40,1,0.6,0.1403,-0.2547,-1.1364,2.2,NWS,[CALIB BIAS +0¢ NO edge],04bd8922-d8dd-4835-bcc3-b220adced89e,2026-04-16T14:24:44Z,,,,,,
+2026-04-16,KXLOWTDEN-26APR16-T39,Denver,low,39.0,less,yes,PASSIVE,4,1,0.04,0.8462,0.8062,-2.2727,2.2,NWS,,ced9c226-51ab-407d-859e-f360c1aecb34,2026-04-16T14:28:51Z,,,,,,
