@@ -533,3 +533,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-04-17,KXHIGHTPHX-26APR17-B87.5,Phoenix,high,87.0,between,no,MIDWAY,48,1,0.52,0.0976,-0.3874,-1.875,2.4,NWS,[CALIB BIAS +0¢ NO edge],2806c837-4ed4-4233-95f8-0cf4928c8e67,2026-04-17T13:29:40Z,,,,,,
 2026-04-17,KXLOWTNYC-26APR17-T61,New York City,low,61.0,less,yes,MIDWAY,56,1,0.56,0.9152,0.3752,-2.0833,2.4,NWS,,800a63a0-c7c2-4781-9b13-8cd439e93e3a,2026-04-17T13:29:41Z,,,,,,
 2026-04-17,KXHIGHTSEA-26APR17-B57.5,Seattle,high,57.0,between,no,MIDWAY,50,1,0.5,0.1579,-0.3471,-1.0417,2.4,NWS,[CALIB BIAS +0¢ NO edge],5ed8eb26-6147-4774-a31c-ecfb8e3c984a,2026-04-17T13:29:42Z,,,,,,
+2026-04-17,KXHIGHTOKC-26APR17-B78.5,Oklahoma City,high,78.0,between,no,MIDWAY,36,1,0.64,0.03,-0.335,0.625,2.4,METAR↑,day_high=80.6°>79° ✗range | [CALIB BIAS +0¢ NO edge],9b34bbe8-e078-4aa3-aca4-9ebfb9d0538a,2026-04-17T13:29:43Z,,,,,,
