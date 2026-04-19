@@ -616,3 +616,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-04-19,KXHIGHTNOLA-26APR19-B73.5,New Orleans,high,73.0,between,no,PASSIVE,92,1,0.08,0.03,-0.89,-0.75,2.0,METAR↑,day_high=78.8°>74° ✗range,570a8b7c-63ed-426c-bcfd-a16ed498665d,2026-04-19T18:31:06Z,,,,,,
 2026-04-19,KXLOWTCHI-26APR19-B36.5,Chicago,low,36.0,between,no,PASSIVE,84,1,0.16,0.03,-0.805,-1.75,2.0,METAR↓,day_low=35.6°<36° ✗range,6b640698-352f-4efa-a42f-61f45504ca9b,2026-04-19T18:31:13Z,,,,,,
 2026-04-19,KXHIGHTDC-26APR19-B65.5,Washington DC,high,65.0,between,no,PASSIVE,94,1,0.06,0.1412,-0.7988,-3.75,2.0,NWS,,3e3c867f-b1cc-4610-a747-f97b9e733f69,2026-04-19T18:31:19Z,,,,,,
+2026-04-19,KXHIGHTBOS-26APR19-T53,Boston,high,53.0,less,no,PASSIVE,98,1,0.02,0.2038,-0.7762,1.5,2.0,NWS,,a4dc1742-c740-40be-b3aa-43e8d6cfdc26,2026-04-19T18:31:25Z,,,,,,
