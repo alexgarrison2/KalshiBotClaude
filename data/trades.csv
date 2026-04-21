@@ -670,3 +670,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-04-21,KXHIGHTOKC-26APR21-B65.5,Oklahoma City,high,65.0,between,no,MIDWAY,43,1,0.57,0.03,-0.395,-0.1923,2.6,METAR↑,day_high=69.8°>66° ✗range | [CALIB BIAS +0¢ NO edge],e946d8c7-8fd0-44a4-9319-9c954ac29d6d,2026-04-21T12:08:36Z,,,,,,
 2026-04-21,KXHIGHTDAL-26APR21-B63.5,Dallas,high,63.0,between,no,MIDWAY,39,1,0.61,0.03,-0.36,-0.5769,2.6,METAR↑,day_high=68.0°>64° ✗range | [CALIB BIAS +0¢ NO edge],4eb04a52-9179-494e-8181-3460f9166bef,2026-04-21T12:08:37Z,,,,,,
 2026-04-21,KXHIGHTMIN-26APR21-B75.5,Minneapolis,high,75.0,between,no,MIDWAY,45,1,0.55,0.1767,-0.2683,-0.5769,2.6,NWS,[CALIB BIAS +0¢ NO edge],e99c98e4-6209-437b-ad62-a9c33e838f9a,2026-04-21T12:08:39Z,,,,,,
+2026-04-21,KXHIGHTATL-26APR21-B81.5,Atlanta,high,81.0,between,no,MIDWAY,40,1,0.6,0.1414,-0.2536,-0.9615,2.6,NWS,[CALIB BIAS +0¢ NO edge],f5da8161-c5f2-427e-b529-bf44e2c9d0c9,2026-04-21T12:08:40Z,,,,,,
