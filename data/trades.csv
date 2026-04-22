@@ -682,3 +682,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-04-21,KXHIGHTNOLA-26APR21-B80.5,New Orleans,high,80.0,between,no,MIDWAY,54,1,0.46,0.246,-0.309,0.25,2.0,NWS,[CALIB BIAS +0¢ NO edge],f0feaf53-90e6-43de-bbed-7f3ff69a607f,2026-04-21T17:16:38Z,,2026-04-21T17:22:27Z,,,,
 2026-04-21,KXHIGHTSFO-26APR21-B62.5,San Francisco,high,62.0,between,no,MIDWAY,43,1,0.57,0.1426,-0.2874,-1.25,2.0,NWS,[CALIB BIAS +0¢ NO edge],86717eeb-6c32-45b1-bc46-b1644415ab5d,2026-04-21T18:15:59Z,,2026-04-21T18:16:32Z,,,,
 2026-04-22,KXHIGHTLV-26APR22-T80,Las Vegas,high,80.0,greater,yes,PASSIVE,2,1,0.02,0.97,0.955,-1.8182,2.2,METAR↑,day_high=84.2°>80° ✓YES,7d72107c-01f6-46c3-bfc9-0c6459ad685c,2026-04-22T14:37:19Z,,,,,,
+2026-04-22,KXHIGHTPHX-26APR22-T92,Phoenix,high,92.0,greater,yes,PASSIVE,4,1,0.04,0.97,0.925,-3.1818,2.2,METAR↑,day_high=93.2°>92° ✓YES,d6bc1acd-7d50-4cd1-9ac7-be1671aa0392,2026-04-22T14:37:21Z,,,,,,
