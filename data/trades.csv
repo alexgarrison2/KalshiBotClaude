@@ -721,3 +721,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-04-23,KXHIGHTSEA-26APR23-B60.5,Seattle,high,60.0,between,no,MIDWAY,48,1,0.52,0.2,-0.285,-0.1923,2.6,NWS,[CALIB BIAS +0¢ NO edge],32e1245a-b95e-49a3-bc31-3fd3ef816fb8,2026-04-23T12:29:05Z,,2026-04-23T12:29:55Z,,,,
 2026-04-23,KXLOWTLAX-26APR23-B55.5,Los Angeles,low,55.0,between,no,MIDWAY,10,1,0.9,0.03,-0.18,-0.1923,2.6,METAR↓,day_low=53.6°<55° ✗range,36d2b7ad-286c-4531-b32f-178d5be2fc7a,2026-04-23T12:29:06Z,,2026-04-23T12:29:55Z,,,,
 2026-04-23,KXLOWTLAX-26APR23-B53.5,Los Angeles,low,53.0,between,no,PASSIVE,98,1,0.02,0.1903,-0.7847,1.5909,2.2,NWS,,6f10df0a-59ec-4664-aa25-95148aae760f,2026-04-23T14:05:08Z,,,,,,
+2026-04-23,KXHIGHTNOLA-26APR23-B82.5,New Orleans,high,82.0,between,no,MIDWAY,57,1,0.43,0.2345,-0.3355,-0.2273,2.2,NWS,[CALIB BIAS +0¢ NO edge],c26584b0-8f4f-4bc8-a15b-b85abac72b12,2026-04-23T14:05:10Z,,,,,,
