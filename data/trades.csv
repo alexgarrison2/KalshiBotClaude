@@ -729,3 +729,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-04-23,KXLOWTNYC-26APR23-B44.5,New York City,low,44.0,between,no,PASSIVE,98,1,0.02,0.1471,-0.8329,3.8636,2.2,NWS,,8e08d870-047e-4065-83aa-8c6ee5a42fab,2026-04-23T14:40:18Z,,2026-04-23T14:41:20Z,,,,
 2026-04-23,KXHIGHTBOS-26APR23-B64.5,Boston,high,64.0,between,no,MIDWAY,37,1,0.63,0.075,-0.295,-2.0455,2.2,NWS,[CALIB BIAS +0¢ NO edge],3e8b2a5f-ed07-4049-8928-901ec4b4e1fe,2026-04-23T14:54:07Z,,2026-04-23T15:00:52Z,,,,
 2026-04-23,KXHIGHTMIN-26APR23-B74.5,Minneapolis,high,74.0,between,no,MIDWAY,38,1,0.62,0.03,-0.345,-0.75,2.0,METAR↑,day_high=84.2°>75° ✗range | [CALIB BIAS +0¢ NO edge],7d86feea-7357-4adf-902d-6d14e3eded88,2026-04-23T15:02:24Z,,,,,,
+2026-04-23,KXLOWTAUS-26APR23-B67.5,Austin,low,67.0,between,no,PASSIVE,94,1,0.06,0.03,-0.91,1.75,2.0,METAR↓,day_low=66.2°<67° ✗range,6764ca47-f3f2-4597-9b45-ed57b2e3032f,2026-04-23T15:11:43Z,,,,,,
