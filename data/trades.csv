@@ -740,3 +740,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-04-25,KXHIGHTDC-26APR25-T69,Washington DC,high,69.0,greater,yes,PASSIVE,22,1,0.22,0.97,0.755,-1.9231,2.6,METAR↑,day_high=69.8°>69° ✓YES,e39334db-8e95-42ab-a2d8-363d8fba1527,2026-04-25T12:32:35Z,,,,,,
 2026-04-25,KXHIGHTPHX-26APR25-B86.5,Phoenix,high,86.0,between,no,PASSIVE,48,1,0.52,0.03,-0.455,-1.3462,2.6,METAR↑,day_high=89.6°>87° ✗range | [CALIB BIAS +0¢ NO edge],40087dfd-b96e-41ef-ba7d-f8c203a0cabf,2026-04-25T12:32:36Z,,,,,,
 2026-04-25,KXLOWTCHI-26APR25-B45.5,Chicago,low,45.0,between,no,PASSIVE,66,1,0.34,0.227,-0.438,-0.1923,2.6,NWS,,6f074c62-2a40-4775-9983-fee038548e53,2026-04-25T12:32:38Z,,,,,,
+2026-04-25,KXHIGHTATL-26APR25-B75.5,Atlanta,high,75.0,between,no,MIDWAY,40,1,0.6,0.03,-0.375,1.3462,2.6,METAR↑,day_high=77.0°>76° ✗range | [CALIB BIAS +0¢ NO edge],97a54845-1ef3-437a-ae84-c2bb544b0b31,2026-04-25T12:32:48Z,,,,,,
