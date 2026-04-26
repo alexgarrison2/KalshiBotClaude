@@ -768,3 +768,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-04-26,KXHIGHTNOLA-26APR26-B83.5,New Orleans,high,83.0,between,no,MIDWAY,40,1,0.6,0.1388,-0.2662,1.25,2.0,NWS,[CALIB BIAS +0¢ NO edge],6dd7ab99-1e3f-47e7-b9a5-d782e8dbbc7a,2026-04-26T15:51:49Z,,2026-04-26T15:52:23Z,,,,
 2026-04-26,KXHIGHTOKC-26APR26-B85.5,Oklahoma City,high,85.0,between,no,MIDWAY,40,1,0.6,0.1373,-0.2577,-1.25,2.0,NWS,[CALIB BIAS +0¢ NO edge],e464e957-b88f-42ab-9aab-52ded25670d5,2026-04-26T16:44:41Z,,2026-04-26T17:01:12Z,,,,
 2026-04-26,KXHIGHTATL-26APR26-B83.5,Atlanta,high,83.0,between,no,MIDWAY,51,1,0.49,0.24,-0.275,-0.25,2.0,NWS,[CALIB BIAS +0¢ NO edge],ba420d4c-6495-48b7-9296-6abb6c2ee4d4,2026-04-26T17:02:45Z,,,,,,
+2026-04-26,KXLOWTCHI-26APR26-B44.5,Chicago,low,44.0,between,no,PASSIVE,97,1,0.03,0.03,-0.94,2.75,2.0,METAR↓,day_low=42.1°<44° ✗range,53694b44-af13-4a96-a280-48d884d35549,2026-04-26T17:14:07Z,,,,,,
