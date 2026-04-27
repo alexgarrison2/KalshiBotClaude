@@ -797,3 +797,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-04-27,KXHIGHTSEA-26APR27-B59.5,Seattle,high,59.0,between,no,MIDWAY,43,1,0.57,0.03,-0.395,0.75,2.0,METAR↑,day_high=66.2°>60° ✗range | [CALIB BIAS +0¢ NO edge],6a4f0d6b-3051-4617-aa2c-d051a8e69728,2026-04-27T17:57:46Z,,2026-04-27T18:33:56Z,,,,
 2026-04-27,KXHIGHTATL-26APR27-T77,Atlanta,high,77.0,less,no,PASSIVE,61,1,0.39,0.03,-0.58,1.0,2.0,METAR↑,day_high=78.8°>77° ✓NO | [CALIB BIAS +0¢ NO edge],3f256522-5b0c-41b2-b9d0-af79fc1917c4,2026-04-27T18:39:20Z,,2026-04-27T18:39:52Z,,,,
 2026-04-27,KXHIGHTOKC-26APR27-B90.5,Oklahoma City,high,90.0,between,no,PASSIVE,86,1,0.14,0.2063,-0.6487,-1.25,2.0,NWS,,a4528726-194a-4a9d-81d1-edd7d5bac326,2026-04-27T19:57:40Z,,,,,,
+2026-04-27,KXHIGHTNOLA-26APR27-B85.5,New Orleans,high,85.0,between,no,PASSIVE,88,1,0.12,0.2586,-0.6164,0.75,2.0,NWS,,daa96308-1f1a-471b-b400-7b070977f8cd,2026-04-27T19:57:41Z,,,,,,
