@@ -783,3 +783,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-04-27,KXLOWTCHI-26APR27-B50.5,Chicago,low,50.0,between,no,PASSIVE,92,1,0.08,0.03,-0.895,0.1923,2.6,METAR↓,day_low=46.0°<50° ✗range,18484c0c-d7d6-465b-8c04-92b50fbf2f6f,2026-04-27T12:07:02Z,,,,,,
 2026-04-27,KXHIGHTPHX-26APR27-B82.5,Phoenix,high,82.0,between,no,PASSIVE,68,1,0.32,0.1542,-0.5208,-1.3462,2.6,NWS,,07758b45-4339-478b-b41c-74f963360b15,2026-04-27T12:07:04Z,,,,,,
 2026-04-27,KXHIGHTATL-26APR27-B77.5,Atlanta,high,77.0,between,no,PASSIVE,45,1,0.55,0.03,-0.415,0.5769,2.6,METAR↑,day_high=78.8°>78° ✗range | [CALIB BIAS +0¢ NO edge],ea177039-a021-4da4-bfa7-b674a3f36be6,2026-04-27T12:07:05Z,,,,,,
+2026-04-27,KXHIGHTSFO-26APR27-B62.5,San Francisco,high,62.0,between,no,PASSIVE,57,1,0.43,0.1684,-0.4066,-0.9615,2.6,NWS,[CALIB BIAS +0¢ NO edge],5ae7a636-3f60-47ca-aee9-7eb2d5021acf,2026-04-27T12:07:06Z,,,,,,
