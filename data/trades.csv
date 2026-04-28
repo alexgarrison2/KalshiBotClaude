@@ -807,3 +807,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-04-28,KXHIGHTATL-26APR28-T77,Atlanta,high,77.0,less,no,MIDWAY,64,1,0.36,0.2845,-0.3605,0.7692,2.6,NWS,[CALIB BIAS +0¢ NO edge],0177fa34-6484-4720-9b18-dbde0843552a,2026-04-28T12:12:02Z,,,,,,
 2026-04-28,KXLOWTCHI-26APR28-B50.5,Chicago,low,50.0,between,no,MIDWAY,42,1,0.58,0.1579,-0.3471,-0.9615,2.6,NWS,[CALIB BIAS +0¢ NO edge],2ecef816-30c4-4df5-b3c8-183735dcddd3,2026-04-28T12:12:03Z,,,,,,
 2026-04-28,KXHIGHTDAL-26APR28-B88.5,Dallas,high,88.0,between,no,MIDWAY,38,1,0.62,0.03,-0.345,0.9615,2.6,METAR↑,day_high=89.6°>89° ✗range | [CALIB BIAS +0¢ NO edge],d4aad841-01bb-4b62-acbf-1c00918228ce,2026-04-28T12:12:05Z,,,,,,
+2026-04-28,KXHIGHTDC-26APR28-B63.5,Washington DC,high,63.0,between,no,MIDWAY,36,1,0.64,0.03,-0.335,0.5769,2.6,METAR↑,day_high=64.4°>64° ✗range | [CALIB BIAS +0¢ NO edge],f23ad175-2013-43ce-90f3-8a41c82b9cc2,2026-04-28T12:12:06Z,,,,,,
