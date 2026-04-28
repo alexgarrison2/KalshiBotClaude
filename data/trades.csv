@@ -803,3 +803,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-04-28,KXLOWTAUS-26APR28-T75,Austin,low,75.0,greater,no,PASSIVE,88,1,0.12,0.2376,-0.6424,-1.1538,2.6,NWS,,e66d0b04-2d6d-4ea7-b5df-af7b2e33a1a5,2026-04-28T12:06:39Z,,,,,,
 2026-04-28,KXHIGHTPHX-26APR28-B86.5,Phoenix,high,86.0,between,no,PASSIVE,64,1,0.36,0.1497,-0.4953,-1.3462,2.6,NWS,[CALIB BIAS +0¢ NO edge],ab3fec16-858e-4bcb-8ac0-eec121a8582a,2026-04-28T12:06:40Z,,,,,,
 2026-04-28,KXHIGHTSATX-26APR28-T92,San Antonio,high,92.0,less,yes,PASSIVE,22,1,0.22,0.696,0.471,-0.7692,2.6,NWS,,647bfe6c-54a2-41c5-b20c-8fdbdaa76dfa,2026-04-28T12:06:41Z,,,,,,
+2026-04-28,KXHIGHTLV-26APR28-B77.5,Las Vegas,high,77.0,between,no,PASSIVE,64,1,0.36,0.224,-0.421,-0.1923,2.6,NWS,[CALIB BIAS +0¢ NO edge],695fe568-ae68-4734-bc86-25fdfbc79807,2026-04-28T12:12:01Z,,,,,,
