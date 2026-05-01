@@ -819,3 +819,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-05-01,KXHIGHTDAL-26MAY01-B62.5,Dallas,high,62.0,between,no,MIDWAY,34,1,0.66,0.0645,-0.2705,-2.1154,2.6,NWS,,02a13f68-24f4-4d64-a18d-7d96ec92b752,2026-05-01T12:05:14Z,,,,,,
 2026-05-01,KXHIGHTMIN-26MAY01-B53.5,Minneapolis,high,53.0,between,no,MIDWAY,46,1,0.54,0.1955,-0.2595,0.1923,2.6,NWS,[CALIB BIAS +0¢ NO edge],2d3fce8d-9364-4c8e-80be-2d0374935ab4,2026-05-01T12:05:15Z,,,,,,
 2026-05-01,KXHIGHTATL-26MAY01-B71.5,Atlanta,high,71.0,between,no,MIDWAY,43,1,0.57,0.194,-0.251,0.1923,2.6,NWS,[CALIB BIAS +0¢ NO edge],d3378aa7-5c58-4995-a30d-ca43fb26a84e,2026-05-01T12:05:17Z,,,,,,
+2026-05-01,KXHIGHTHOU-26MAY01-B70.5,Houston,high,70.0,between,no,MIDWAY,20,1,0.8,0.03,-0.165,-0.1923,2.6,METAR↑,day_high=75.2°>71° ✗range,1d869bcc-d018-442d-818c-475174a057ae,2026-05-01T12:05:19Z,,,,,,
