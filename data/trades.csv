@@ -811,3 +811,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-04-28,KXHIGHTMIN-26APR28-B55.5,Minneapolis,high,55.0,between,no,MIDWAY,50,1,0.5,0.1842,-0.3108,-0.5769,2.6,NWS,[CALIB BIAS +0¢ NO edge],4a662f89-c6c1-41b2-88db-0c59d5935021,2026-04-28T12:12:07Z,,,0.0,no,0.5,
 2026-04-28,KXHIGHTSFO-26APR28-B67.5,San Francisco,high,67.0,between,no,MIDWAY,38,1,0.62,0.0873,-0.2977,-1.7308,2.6,NWS,[CALIB BIAS +0¢ NO edge],6c8eb0fd-6c1b-4c5e-9fbc-914d30c0a37b,2026-04-28T12:12:09Z,,,0.0,no,0.38,
 2026-05-01,KXHIGHTSEA-26MAY01-T75,Seattle,high,75.0,greater,yes,PASSIVE,4,1,0.04,0.97,0.925,-2.3077,2.6,METAR↑,day_high=75.2°>75° ✓YES,628ab2e6-acb1-4de0-a4de-552f77a2384c,2026-05-01T12:05:05Z,,,,,,
+2026-05-01,KXHIGHTSATX-26MAY01-T67,San Antonio,high,67.0,less,no,PASSIVE,84,1,0.16,0.03,-0.805,-1.5385,2.6,METAR↑,day_high=73.4°>67° ✓NO,81ec9b85-1870-48a0-96dd-39544592176c,2026-05-01T12:05:07Z,,,,,,
