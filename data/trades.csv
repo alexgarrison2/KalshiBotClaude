@@ -838,3 +838,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-05-01,KXHIGHTHOU-26MAY01-T70,Houston,high,70.0,less,no,PASSIVE,96,1,0.04,0.03,-0.93,-1.5,2.0,METAR↑,day_high=75.2°>70° ✓NO,3e6d586b-9c87-4bcd-a8c8-ab97029108db,2026-05-01T18:36:06Z,,2026-05-01T18:45:43Z,,,,
 2026-05-01,KXHIGHTSATX-26MAY01-B67.5,San Antonio,high,67.0,between,no,MIDWAY,38,1,0.62,0.03,-0.365,-2.25,2.0,METAR↑,day_high=73.4°>68° ✗range | [CALIB BIAS +0¢ NO edge],7d03c43f-2541-456c-9c66-64d8d7c89dbb,2026-05-01T18:52:56Z,,2026-05-01T18:53:27Z,,,,
 2026-05-01,KXLOWTLAX-26MAY01-T59,Los Angeles,low,59.0,greater,no,PASSIVE,86,1,0.14,0.2639,-0.5961,-1.0,2.0,NWS,,9bb53a52-dbf5-40cf-a30c-25f7ea2829c4,2026-05-01T19:03:15Z,,,,,,
+2026-05-01,KXLOWTAUS-26MAY01-B53.5,Austin,low,53.0,between,no,MIDWAY,32,1,0.68,0.1366,-0.2534,-1.25,2.0,NWS,[CALIB BIAS +0¢ NO edge],ecc9a88b-a766-404a-a85e-042b7f8dc8cb,2026-05-01T19:20:39Z,,,,,,
