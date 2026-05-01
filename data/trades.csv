@@ -813,3 +813,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-05-01,KXHIGHTSEA-26MAY01-T75,Seattle,high,75.0,greater,yes,PASSIVE,4,1,0.04,0.97,0.925,-2.3077,2.6,METAR↑,day_high=75.2°>75° ✓YES,628ab2e6-acb1-4de0-a4de-552f77a2384c,2026-05-01T12:05:05Z,,,,,,
 2026-05-01,KXHIGHTSATX-26MAY01-T67,San Antonio,high,67.0,less,no,PASSIVE,84,1,0.16,0.03,-0.805,-1.5385,2.6,METAR↑,day_high=73.4°>67° ✓NO,81ec9b85-1870-48a0-96dd-39544592176c,2026-05-01T12:05:07Z,,,,,,
 2026-05-01,KXHIGHTNOLA-26MAY01-B72.5,New Orleans,high,72.0,between,no,PASSIVE,74,1,0.26,0.03,-0.715,0.5769,2.6,METAR↑,day_high=73.4°>73° ✗range,751cd552-7152-4bc6-9b2e-dfe29b99f603,2026-05-01T12:05:08Z,,,,,,
+2026-05-01,KXHIGHTPHX-26MAY01-B91.5,Phoenix,high,91.0,between,no,PASSIVE,68,1,0.32,0.1557,-0.5293,-1.3462,2.6,NWS,,74193b7b-2fe7-4df4-8f08-18a760b625a8,2026-05-01T12:05:10Z,,,,,,
