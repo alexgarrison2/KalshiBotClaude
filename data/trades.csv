@@ -848,3 +848,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-05-02,KXLOWTDEN-26MAY02-B36.5,Denver,low,36.0,between,no,PASSIVE,66,1,0.34,0.209,-0.451,-0.5769,2.6,NWS,,44fe65c1-b109-4057-b67f-acd194e4ddfe,2026-05-02T12:06:02Z,,,,,,
 2026-05-02,KXHIGHTSFO-26MAY02-B61.5,San Francisco,high,61.0,between,no,MIDWAY,36,1,0.64,0.03,-0.325,-0.1923,2.6,METAR↑,day_high=62.6°>62° ✗range | [CALIB BIAS +0¢ NO edge],da50e704-e1b1-4106-aa02-05b11adc4ae9,2026-05-02T12:06:03Z,,,,,,
 2026-05-02,KXHIGHTLV-26MAY02-B85.5,Las Vegas,high,85.0,between,no,MIDWAY,52,1,0.48,0.2045,-0.3105,0.1923,2.6,NWS,[CALIB BIAS +0¢ NO edge],0f02c176-c448-4600-9446-c2e1654e94f3,2026-05-02T12:06:04Z,,,,,,
+2026-05-02,KXHIGHTSEA-26MAY02-B74.5,Seattle,high,74.0,between,no,MIDWAY,38,1,0.62,0.0858,-0.2892,-1.7308,2.6,NWS,[CALIB BIAS +0¢ NO edge],f0c96f6f-ac42-4419-b571-87628d5755c3,2026-05-02T12:06:05Z,,,,,,
