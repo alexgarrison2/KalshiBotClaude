@@ -894,3 +894,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-05-03,KXHIGHTSEA-26MAY03-B79.5,Seattle,high,79.0,between,no,MIDWAY,53,1,0.47,0.2422,-0.2878,-0.25,2.0,NWS,[CALIB BIAS +0¢ NO edge],376a6ed5-92a7-4885-a46c-ff4e8e70c1d5,2026-05-03T20:44:21Z,,2026-05-03T20:44:53Z,0.0,no,0.53,
 2026-05-06,KXHIGHTBOS-26MAY06-B69.5,Boston,high,69.0,between,no,MIDWAY,90,3,0.3,0.2131,-0.6869,-1.25,2.0,NWS,,e19bd0f5-e47d-4d42-b399-19d1f3ee245d,2026-05-06T17:57:40Z,,,,,,,weather
 2026-05-06,KXHIGHTATL-26MAY06-B81.5,Atlanta,high,81.0,between,no,MIDWAY,62,1,0.38,0.2204,-0.3996,0.75,2.0,NWS,,002bcfa2-c6f9-4160-bfee-ad7b9de13d3c,2026-05-06T17:57:41Z,,,,,,,weather
+2026-05-06,KXLOWTCHI-26MAY06-B42.5,Chicago,low,42.0,between,no,MIDWAY,94,1,0.06,0.03,-0.91,-1.25,2.0,METAR↓,day_low=41.0°<42° ✗range,df9639a7-d094-4599-b54c-369d85237e3f,2026-05-06T17:57:41Z,,,,,,,weather
