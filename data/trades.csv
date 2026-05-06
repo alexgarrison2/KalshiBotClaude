@@ -897,3 +897,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-05-06,KXLOWTCHI-26MAY06-B42.5,Chicago,low,42.0,between,no,MIDWAY,94,1,0.06,0.03,-0.91,-1.25,2.0,METAR↓,day_low=41.0°<42° ✗range,df9639a7-d094-4599-b54c-369d85237e3f,2026-05-06T17:57:41Z,,,,,,,
 2026-05-06,KXHIGHTPHX-26MAY06-B85.5,Phoenix,high,85.0,between,no,MIDWAY,68,1,0.32,0.1801,-0.4999,-1.25,2.0,NWS,,bd8674f5-9d57-4713-a8c6-bc8499a0e1d5,2026-05-06T17:57:41Z,,2026-05-06T17:57:53Z,,,,,
 2026-05-06,KXLOWTDEN-26MAY06-B30.5,Denver,low,30.0,between,no,MIDWAY,45,1,0.55,0.0816,-0.3684,-2.25,2.0,NWS,,3db93fc4-c0dd-4ff0-8355-038679c9d71a,2026-05-06T17:57:54Z,,,,,,,weather
+2026-05-06,KXLOWTNYC-26MAY06-B60.5,New York City,low,60.0,between,no,MIDWAY,35,1,0.65,0.03,-0.32,-3.75,2.0,METAR↓,day_low=57.2°<60° ✗range,9d9d2caf-7085-43e2-b719-e971c6892068,2026-05-06T17:57:54Z,,,,,,,weather
