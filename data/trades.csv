@@ -923,3 +923,4 @@ date,ticker,city,temp_type,threshold,strike_type,side,entry_mode,price_cents,con
 2026-05-07,KXHIGHTSEA-26MAY07-T66,Seattle,high,66.0,less,no,MIDWAY,96,15,0.6,0.691,-0.274,-0.5,2.0,ENSEMBLE,ENS: 28/82 members > 66° (raw=65% → cal=69%) mean=65.1° spread=8.0° | TRAJ: 70% → blend=69% | spread=8.0° → edge_req=25¢,10fae0af-0378-4dff-80a6-7e44b5e7388f,2026-05-08T00:08:10Z,,,,,,
 2026-05-08,KXHIGHTHOU-26MAY08-T76,Houston,high,76.0,less,no,MIDWAY,18,1,0.82,0.03,-0.145,1.5,2.0,METAR↑,day_high=78.8°>76° ✓NO,4f45086e-e718-4be6-b8db-293a8004f652,2026-05-08T15:15:25Z,,2026-05-08T15:32:05Z,,,,
 2026-05-08,KXLOWTLAX-26MAY08-T59,Los Angeles,low,59.0,greater,no,PASSIVE,82,1,0.18,0.2571,-0.5579,-1.0,2.0,NWS,,53f094f2-e255-4751-a983-31ad23e67f5e,2026-05-08T18:40:14Z,,,,,,
+2026-05-08,KXHIGHTSEA-26MAY09-T70,Seattle,high,70.0,less,yes,MIDWAY,54,1,0.54,0.8735,0.3385,-1.5,2.0,NWS,,d03a040d-e5c3-46b1-8970-317b2faf2460,2026-05-08T18:58:40Z,,,,,,
