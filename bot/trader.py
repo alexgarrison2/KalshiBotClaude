@@ -288,8 +288,10 @@ class WeatherTrader:
     # ── Order management ──────────────────────────────────────────────────────
 
     def _place_order(
-        self, ticker: str, side: str, yes_price_cents: int, entry_mode: str
+        self, ticker: str, side: str, yes_price_cents: int, entry_mode: str,
+        contracts: int = None,
     ) -> dict:
+        count = contracts or self.trade_size
         yes_price_cents = max(1, min(99, yes_price_cents))
         if self.dry_run:
             cost = yes_price_cents / 100 if side == "yes" else (100 - yes_price_cents) / 100
@@ -300,7 +302,7 @@ class WeatherTrader:
             "action":          "buy",
             "side":            side,
             "type":            "limit",
-            "count":           self.trade_size,
+            "count":           count,
             "yes_price":       yes_price_cents,
             "client_order_id": str(uuid.uuid4()),
         })
@@ -691,7 +693,8 @@ class WeatherTrader:
                         contracts = self.trade_size
 
                     result = self._place_order(
-                        ticker, s.side, s.yes_price_cents, s.entry_mode
+                        ticker, s.side, s.yes_price_cents, s.entry_mode,
+                        contracts=contracts,
                     )
                     order_id = result.get("order_id", "DRY-RUN")
                     total_risk = s.entry_cost * contracts

@@ -52,7 +52,7 @@ console = Console()
 ET = ZoneInfo("America/New_York")
 
 # ── Constants (match Taylor's trader.py exactly) ──────────────────────────────
-MIN_EDGE           = 0.25   # 25¢ minimum edge for NWS/ensemble trades (model has uncertainty)
+MIN_EDGE           = 0.30   # 30¢ minimum edge — backtested sweet spot for threshold contracts
 MIN_EDGE_METAR     = 0.07   # 7¢ minimum edge for METAR-confirmed trades (outcome already known)
 EDGE_PASSIVE       = 0.40   # ≥ 40¢ → place at mid (passive maker)
 MIN_VOLUME         = 1_000  # minimum 24-hour contracts
@@ -81,8 +81,8 @@ MIN_Z_SCORE        = 0.75   # NWS forecast must be ≥ 0.75σ from threshold for
 MARKET_BLEND_WEIGHT = 0.15  # 15% weight on market price when forming final probability
                              # prevents model from straying far from consensus without evidence
 
-KELLY_FRACTION     = 0.25   # quarter-Kelly (conservative until 100+ trade history)
-KELLY_MAX_CONTRACTS = 10    # hard cap per trade regardless of Kelly output
+KELLY_FRACTION     = 0.10   # tenth-Kelly until model calibration is validated
+KELLY_MAX_CONTRACTS = 3     # hard cap per trade — no more 15-contract blowups
 
 
 # ── Market info dataclass ─────────────────────────────────────────────────────
@@ -160,10 +160,12 @@ def parse_open_market(series: str, m: dict) -> Optional[WeatherMarket]:
     last_seg    = ticker.split("-")[-1]
     strike_type = m.get("strike_type", "greater")
 
-    # Accept T-prefix threshold contracts and B-prefix between contracts
+    # Only accept T-prefix threshold contracts (greater/less).
+    # Between (B-prefix range) contracts are DISABLED: the normCDF model
+    # underestimates P(temp in narrow 2°F range) by 30-37pp, generating
+    # phantom edge that lost $2.71 over 705 trades.
     is_threshold = last_seg.startswith("T") and last_seg[1:].replace(".", "").isdigit()
-    is_between   = last_seg.startswith("B") and last_seg[1:].replace(".", "").isdigit() and strike_type == "between"
-    if not (is_threshold or is_between):
+    if not is_threshold:
         return None
 
     vol = float(m.get("volume_24h_fp", 0))
